@@ -1,0 +1,11 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:drawable="@drawable/rounded_buttom_logout_pressed_perfil"
+        android:state_pressed="true" />
+    <item
+        android:drawable="@drawable/rounded_buttom_logout_pressed_perfil"
+        android:state_checked="true" />
+    <item
+        android:drawable="@drawable/rounded_buttom_logout_perfil" />
+</selector>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_perfil"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorSecondary"
+    tools:context="promoz.com.br.promoz.PerfilActivity"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|center"
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="200dp"
+            android:id="@+id/perfil_foto"
+            android:layout_marginTop="20dp"
+            android:layout_height="200dp"
+            android:background="@drawable/rounded_border_primary"
+            android:layout_marginBottom="20dp"
+            android:padding="2dp"
+            android:src="@drawable/default_photo" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/change_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/camera_float"
+            android:layout_alignBottom="@+id/perfil_foto"
+            android:layout_alignRight="@+id/perfil_foto"
+            android:layout_alignEnd="@+id/perfil_foto" />
+    </RelativeLayout>
+
+        <TextView
+            android:id="@+id/nome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/user_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorCinzaSaldo" />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="15dp"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/user_email"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@android:color/transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_margin="@dimen/activity_horizontal_margin">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_password"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:id="@+id/change_pass"
+            android:textColor="@drawable/text_buttom_color_logout_perfil"
+            android:background="@drawable/buttom_logout_perfil" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logout"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:id="@+id/logoutbt"
+            android:textColor="@drawable/text_buttom_color_logout_perfil"
+            android:background="@drawable/buttom_logout_perfil" />
+        </LinearLayout>
+    </LinearLayout>
+  </ScrollView>
+</LinearLayout>
