@@ -62,12 +62,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 18));
 
-        googleMap.setOnMarkerClickListener(this);
+        mMap.setOnMarkerClickListener(this);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        switch (marker.getTitle()) {
+            case "Marker no Tamari":
+                Toast.makeText(this,"TAMARI",Toast.LENGTH_SHORT);
+                break;
 
+
+        }
         return false;
     }
 }
