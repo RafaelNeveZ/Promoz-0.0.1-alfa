@@ -16,12 +16,12 @@ public class ImgHttpResponseHandler extends AsyncHttpResponseHandler {
         void finishedImg(byte[] img);
     }
 
-    public void setCallback(Activity activity){
+    public void setCallback(Activity activity) {
         try {
             callback = (onFinishResponseImg) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement onFinishResponse");
+                    + " must implement onFinishResponseImg");
         }
     }
 

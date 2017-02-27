@@ -75,6 +75,10 @@ public class HttpResponseHandler extends AsyncHttpResponseHandler {
         return advertisings;
     }
 
+    public void clearAdvertisings(){
+        advertisings.clear();
+    }
+
     @Override
     public void onStart() {
         // called before request is started
