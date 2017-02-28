@@ -1,10 +1,16 @@
 package com.example.rafae.promoz_001_alfa.model;
 
+import android.content.Context;
+import com.example.rafae.promoz_001_alfa.R;
+import com.example.rafae.promoz_001_alfa.util.ImgHttpResponseHandler;
+import com.example.rafae.promoz_001_alfa.util.Singleton;
+import com.loopj.android.http.AsyncHttpClient;
+
 /**
  * Created by vallux on 25/02/17.
  */
 
-public class Advertising {
+public class Advertising implements ImgHttpResponseHandler.onFinishResponseImg {
     private Integer id;
     private Integer idStore;
     private byte[] image;
@@ -16,6 +22,28 @@ public class Advertising {
     private Double lat;
     private Double lng;
     private Double alt;
+    private ImgHttpResponseHandler responseHandler;
+    private AsyncHttpClient client;
+    private Context context;
+
+    public Advertising(Context context) {
+        this.context = context;
+    }
+
+    public  void setImage(){
+        this.responseHandler = new ImgHttpResponseHandler();
+        client = new AsyncHttpClient();
+        this.responseHandler.setCallback(this);
+
+        String URL = this.context.getResources().getString(R.string.protocol) + Singleton.getServerIp(this.context.getResources().getString(R.string.server_ip), this.context.getResources().getString(R.string.pref_default_ip_address), this.context) + this.context.getResources().getString(R.string.image_directory)  + getImageURL();
+
+        client.get(URL,this.responseHandler);
+    }
+
+    @Override
+    public void finishedImg(byte[] img) {
+        this.image = img;
+    }
 
     public Double getAlt() {
         return alt;
@@ -69,9 +97,9 @@ public class Advertising {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    /*public void setImage(byte[] image) {
         this.image = image;
-    }
+    }*/
 
     public Integer getQtdCoin() {
         return qtdCoin;

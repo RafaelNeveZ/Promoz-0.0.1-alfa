@@ -10,7 +10,8 @@
 
     <string name="pref_header_network">Network</string>
     <string name="pref_title_server_ip">Server IP</string>
-
+    <string name="protocol">http://</string>
+    <string name="image_directory">/advertising/</string>
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>

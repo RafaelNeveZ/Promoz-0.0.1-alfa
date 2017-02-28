@@ -1,6 +1,8 @@
 package com.example.rafae.promoz_001_alfa.util;
 
 import android.app.Activity;
+
+import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
 
@@ -16,11 +18,11 @@ public class ImgHttpResponseHandler extends AsyncHttpResponseHandler {
         void finishedImg(byte[] img);
     }
 
-    public void setCallback(Activity activity) {
+    public void setCallback(Object obj) {
         try {
-            callback = (onFinishResponseImg) activity;
+            callback = (onFinishResponseImg) obj;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(obj.toString()
                     + " must implement onFinishResponseImg");
         }
     }

@@ -8,8 +8,12 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.rafae.promoz_001_alfa.interfaces.Coin;
+import com.example.rafae.promoz_001_alfa.interfaces.Markers;
 import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
+import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
+import com.example.rafae.promoz_001_alfa.util.PlayAudio;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,13 +28,14 @@ import com.loopj.android.http.AsyncHttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers {
 
     private GoogleMap mMap;
     Bitmap bmp;
     private HttpResponseHandler responseHandler;
     private AsyncHttpClient client;
     private List<Integer> addedMarkers = new ArrayList<Integer>();
+    Marker tempMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,27 +46,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 //        bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.moeda_marker);
-        bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.diamante_marker);
+        bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.moeda_marker);
         mapFragment.getMapAsync(this);
 
         client = new AsyncHttpClient();
-        responseHandler = new HttpResponseHandler();
+        responseHandler = new HttpResponseHandler(this);
         responseHandler.setCallback(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng tamari = new LatLng(-12.9650861, -38.4314455);
+        LatLng tamari = new LatLng(-12.964996, -38.431504);
         LatLng extra = new LatLng(-12.9629824, -38.4322472);
         LatLng unifacs = new LatLng(-12.9611188, -38.4321055);
-        LatLng ruy = new LatLng(-12.9604738, -38.4317371);
+        LatLng ruy = new LatLng(-12.960244, -38.431348);
         LatLngBounds Imbui = new LatLngBounds(tamari, ruy);
         mMap.addMarker(new MarkerOptions().position(tamari).title("Marker no Tamari").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.addMarker(new MarkerOptions().position(extra).title("Marker no Extra").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.addMarker(new MarkerOptions().position(unifacs).title("Marker no Facs").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.addMarker(new MarkerOptions().position(ruy).title("Marker no Ruy").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 16));
+
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -75,35 +81,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        //Log.e("TAG",marker.getTitle());
         marker.hideInfoWindow();
         if(marker.getTag() == null) {
             String serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
             client.get(serverURL + "?lat=-12.9790&long=-38.4532&dist=160", responseHandler);
         }else{
-            Log.e("IMG","http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/"  + ((Advertising) marker.getTag()).getImageURL());
+            tempMarker = marker;
+            MessageDialogs.msgAddvertising(this,R.layout.add_layout, ((Advertising) marker.getTag()).getImage(), R.id.img_advertising, 5000, 1);
         }
-      //  marker.remove();
         return true;
     }
 
     @Override
     public void finished() {
         List<Advertising> advertisings = responseHandler.getAdvertisings();
-     //   LatLng ljAmeric = new LatLng(-12.9770046, -38.4559200);
-     //   LatLng bomPrec = new LatLng(-12.9798411, -38.4536884);
-            //LatLng cia = new LatLng(-12.979073, -38.453343);
-            //LatLng centauro = new LatLng(-12.978765, -38.45451);
         for (Advertising add : advertisings) {
-            if (addedMarkers.indexOf(add.getId()) == -1) {
+            if (addedMarkers.indexOf(add.getId()) == -1) { // TODO: consultar carteira existencia de moeda já coletada
                 addedMarkers.add(add.getId());
                 LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
                 mMap.addMarker((new MarkerOptions().position(coordLoja).title(add.getTitle()).icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(add.getId().toString()))).setTag(add);
+               add.setImage();
+                // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(add.getLat(),add.getLng()), 16));
             }
         }
         responseHandler.clearAdvertisings();
-      //  LatLngBounds salvadorShopping = new LatLngBounds(bomPrec, ljAmeric);
+/*        LatLng ljAmeric = new LatLng(-12.9770046, -38.4559200);
+        LatLng bomPrec = new LatLng(-12.9798411, -38.4536884);
+        LatLngBounds salvadorShopping = new LatLngBounds(bomPrec, ljAmeric);
+        Log.e("LAT LONG","" + salvadorShopping.getCenter().toString());
         //CameraPosition camPos = new CameraPosition();
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(salvadorShopping, 18));
-        //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(salvadorShopping.getCenter(), 18));
+       //  mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(salvadorShopping, 18));
+       //   mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(salvadorShopping.getCenter(), 18));*/
+    }
+
+    @Override
+    public void gainCoin(Integer qtd) {
+        PlayAudio audio = new PlayAudio();
+        audio.play(this,R.raw.smw_coin);
+        addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
+        tempMarker.remove();
+    }
+
+    @Override
+    public void resetMarker() {
+        tempMarker = null;
     }
 }

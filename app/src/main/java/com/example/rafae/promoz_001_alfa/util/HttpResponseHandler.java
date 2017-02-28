@@ -1,20 +1,19 @@
 package com.example.rafae.promoz_001_alfa.util;
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 
 import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -26,6 +25,10 @@ public class HttpResponseHandler extends AsyncHttpResponseHandler {
 
     public interface onFinishResponse {
         void finished();
+    }
+
+    public HttpResponseHandler(Context context) {
+        this.context = context;
     }
 
     public void setCallback(Activity activity){
@@ -40,11 +43,12 @@ public class HttpResponseHandler extends AsyncHttpResponseHandler {
     private List<Advertising> advertisings = new ArrayList<Advertising>();
     private String response;
     private String nameObj;
+    private Context context;
 
     private void setAdvertisings() {
 
         this.advertisings.clear();
-        Advertising advertising = new Advertising();
+        Advertising advertising = new Advertising(this.context);
         try {
             JSONObject jsonObject = new JSONObject(this.response);
 
