@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
 import com.example.rafae.promoz_001_alfa.model.Advertising;
+import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.PlayAudio;
@@ -28,8 +29,11 @@ import com.loopj.android.http.AsyncHttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers {
 
+    Integer userID=-1;
     private GoogleMap mMap;
     Bitmap bmp;
     private HttpResponseHandler responseHandler;
@@ -42,10 +46,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        checkLogged();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-//        bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.moeda_marker);
         bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.moeda_marker);
         mapFragment.getMapAsync(this);
 
@@ -58,13 +62,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng tamari = new LatLng(-12.964996, -38.431504);
-        LatLng extra = new LatLng(-12.9629824, -38.4322472);
-        LatLng unifacs = new LatLng(-12.9611188, -38.4321055);
+        /*LatLng extra = new LatLng(-12.9629824, -38.4322472);
+        LatLng unifacs = new LatLng(-12.9611188, -38.4321055);*/
         LatLng ruy = new LatLng(-12.960244, -38.431348);
         LatLngBounds Imbui = new LatLngBounds(tamari, ruy);
         mMap.addMarker(new MarkerOptions().position(tamari).title("Marker no Tamari").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        mMap.addMarker(new MarkerOptions().position(extra).title("Marker no Extra").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        mMap.addMarker(new MarkerOptions().position(unifacs).title("Marker no Facs").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+        //mMap.addMarker(new MarkerOptions().position(extra).title("Marker no Extra").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+        //mMap.addMarker(new MarkerOptions().position(unifacs).title("Marker no Facs").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.addMarker(new MarkerOptions().position(ruy).title("Marker no Ruy").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 16));
 
@@ -81,7 +85,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        //Log.e("TAG",marker.getTitle());
         marker.hideInfoWindow();
         if(marker.getTag() == null) {
             String serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
@@ -119,6 +122,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void gainCoin(Integer qtd) {
         PlayAudio audio = new PlayAudio();
         audio.play(this,R.raw.smw_coin);
+
+        // TODO: adicinar moeda na carteira
+
         addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
         tempMarker.remove();
     }
@@ -126,5 +132,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void resetMarker() {
         tempMarker = null;
+    }
+
+    private void checkLogged(){
+        userID = getDefaultSharedPreferences(this).getInt(getResources().getString(R.string.user_id),0);
+        Log.e("USER","ID = " + userID);
+        //if(userID == 0)
+        //    finish();
     }
 }

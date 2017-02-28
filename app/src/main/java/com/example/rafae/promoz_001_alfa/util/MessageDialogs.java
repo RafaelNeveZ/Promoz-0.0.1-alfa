@@ -45,6 +45,7 @@ public class MessageDialogs {
             Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
             ImageView adImage = (ImageView) alert.findViewById(imageId);
             adImage.setImageBitmap(bitmap);
+            adImage.setScaleType(ImageView.ScaleType.FIT_XY);
         }
         alert.show();
 

@@ -3,6 +3,7 @@ package com.example.rafae.promoz_001_alfa.util;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.loopj.android.http.AsyncHttpResponseHandler;

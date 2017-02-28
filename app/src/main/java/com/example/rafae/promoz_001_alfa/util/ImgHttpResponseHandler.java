@@ -1,8 +1,5 @@
 package com.example.rafae.promoz_001_alfa.util;
 
-import android.app.Activity;
-
-import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
 
@@ -35,6 +32,5 @@ public class ImgHttpResponseHandler extends AsyncHttpResponseHandler {
 
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
     }
 }

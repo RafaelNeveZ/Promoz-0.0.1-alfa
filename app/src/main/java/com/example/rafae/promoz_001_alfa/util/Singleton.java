@@ -1,6 +1,8 @@
 package com.example.rafae.promoz_001_alfa.util;
 
 import android.content.Context;
+import android.util.Log;
+
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
@@ -10,7 +12,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class Singleton {
 
     private static Singleton instance;
-    private static String serverIp = "";
+    private static String serverIp = ""; // avaliar necessidade
 
     public static Singleton getInstance() {
         if (instance == null) {
@@ -23,8 +25,7 @@ public class Singleton {
 
     public static String getServerIp(String strPref, String defaultIp, Context context) {
 
-        if(serverIp.equals(""))
-            serverIp = getDefaultSharedPreferences(context).getString(strPref,defaultIp);
+        serverIp = getDefaultSharedPreferences(context).getString(strPref,defaultIp);
 
         return serverIp;
     }

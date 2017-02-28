@@ -8,6 +8,14 @@
 
     <!-- Example General settings -->
 
+    <!-- Strings related to database ERROR  -->
+    <string name="tag_error_db">error_database</string>
+    <string name="error_save_or_update">Erro ao salvar ou atualizar registro!</string>
+    <string name="error_user_by_id">Erro ao buscar usuário!</string>
+    <string name="error_funny_db">Ops! Aconteceu algo estranho. Recomendamos reiniciar o app!</string>
+    <string name="user_id">_ID</string>
+
+
     <string name="pref_header_network">Network</string>
     <string name="pref_title_server_ip">Server IP</string>
     <string name="protocol">http://</string>
