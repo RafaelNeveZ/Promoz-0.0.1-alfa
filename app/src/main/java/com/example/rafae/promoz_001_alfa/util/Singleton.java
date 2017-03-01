@@ -12,7 +12,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class Singleton {
 
     private static Singleton instance;
-    private static String serverIp = ""; // avaliar necessidade
+    private static String serverIp = ""; //TODO:  avaliar necessidade
 
     public static Singleton getInstance() {
         if (instance == null) {

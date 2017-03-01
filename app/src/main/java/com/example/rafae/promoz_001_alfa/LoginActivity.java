@@ -1,7 +1,5 @@
 package com.example.rafae.promoz_001_alfa;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -147,14 +145,6 @@ public class LoginActivity extends AppCompatActivity {
             userDAO.closeDataBase();
             return sucess;
         }
-        /**
-         * Login automático
-         */
-        private void setSharedPreferences(){
-            SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).edit();
-            editor.putInt(User.getChave_ID(), authUser.get_id());
-            editor.commit();
-        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -171,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-                setSharedPreferences();
+                Util.setSharedPreferences(getApplicationContext(),authUser.get_id());
                 finish();
             } else {
                 Util.showProgress(false, getResources(), mLoginFormView, mProgressView);

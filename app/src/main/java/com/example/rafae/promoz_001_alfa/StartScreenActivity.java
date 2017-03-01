@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.Util;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.example.rafae.promoz_001_alfa.R.string.terms;
 
 public class StartScreenActivity extends AppCompatActivity {
@@ -37,8 +39,8 @@ public class StartScreenActivity extends AppCompatActivity {
         super.onRestart();
     }
 
-    private void checkLogged(){
-        if(getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).getInt(User.getChave_ID(),0) != 0)
+    private void checkLogged() {
+        if(getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0) != 0)
             loadMain();
     }
 

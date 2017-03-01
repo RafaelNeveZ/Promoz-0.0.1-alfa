@@ -9,12 +9,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by vallux on 27/02/17.
@@ -35,27 +40,34 @@ public class MessageDialogs {
         Toast.makeText(context, error, Toast.LENGTH_LONG).show();
     }
 
-    public static void msgAddvertising(final Activity activity, int layoutId, byte[] image, int imageId, Integer timeMs, final Integer amountCoin) {
+    public static void msgAddvertising(final Activity activity, int layoutId, byte[] image, int imageId, Integer timeMs, final Integer amountCoin, final LatLng coordLoja) {
 
-        Dialog alert = new Dialog(activity);
+        final Dialog alert = new Dialog(activity);
         alert.setContentView(layoutId);
         alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TimerView timerView = (TimerView) alert.findViewById(R.id.timer);
 
         if(image != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(activity.getResources(), bitmap);
+            drawable.setCircular(true);
             ImageView adImage = (ImageView) alert.findViewById(imageId);
-            adImage.setImageBitmap(bitmap);
-            adImage.setScaleType(ImageView.ScaleType.FIT_XY);
+            adImage.setImageDrawable(drawable);
         }
+
+        final Button bt = (Button)alert.findViewById(R.id.bot);
+        bt.setEnabled(false);
         alert.show();
 
         final CountDownTimer countDownTimer = new CountDownTimer(timeMs, timeMs) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
+                bt.setEnabled(true);
                 Coin callback = (Coin) activity;
                 callback.gainCoin(amountCoin);
             }
         };
+        timerView.start(timeMs/1000);
         countDownTimer.start();
 
         alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -64,6 +76,16 @@ public class MessageDialogs {
                 countDownTimer.cancel();
                 Markers callback = (Markers) activity;
                 callback.resetMarker();
+            }
+        });
+
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO DESENHAR ROTA
+                Markers callback = (Markers) activity;
+                callback.moveCamera(coordLoja);
+                alert.dismiss();
             }
         });
     }

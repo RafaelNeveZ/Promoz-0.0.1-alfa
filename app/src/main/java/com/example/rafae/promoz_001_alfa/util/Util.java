@@ -3,13 +3,18 @@ package com.example.rafae.promoz_001_alfa.util;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.rafae.promoz_001_alfa.model.User;
 
 /**
  * Created by vallux on 28/02/17.
@@ -57,5 +62,12 @@ public class Util extends AppCompatActivity {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    public static void setSharedPreferences(Context context, Integer authUserId){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(User.getChave_ID(), authUserId);
+        editor.commit();
     }
 }

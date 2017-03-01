@@ -1,29 +1,19 @@
 package com.example.rafae.promoz_001_alfa;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
 import com.example.rafae.promoz_001_alfa.model.Advertising;
-import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.PlayAudio;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
-import com.example.rafae.promoz_001_alfa.util.TimerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,7 +26,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.AsyncHttpClient;
 import java.util.ArrayList;
 import java.util.List;
-
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers {
@@ -48,11 +37,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AsyncHttpClient client;
     private List<Integer> addedMarkers = new ArrayList<Integer>();
     Marker tempMarker;
-    final private Context context = this;
-
-    private static final int TIMER_LENGTH = 5;
-
-    private TimerView mTimerView;
+//    final private Context context = this;
+//    private static final int TIMER_LENGTH = 5;
+//    private TimerView mTimerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 context.startActivity(intent);
             }
         });
-        showDialog();
+       // showDialog();
     }
 
     @Override
@@ -105,7 +92,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             client.get(serverURL + "?lat=-12.9790&long=-38.4532&dist=160", responseHandler);
         }else{
             tempMarker = marker;
-            MessageDialogs.msgAddvertising(this,R.layout.add_layout, ((Advertising) marker.getTag()).getImage(), R.id.img_advertising, 5000, 1);
+            Advertising add = (Advertising) tempMarker.getTag();
+            LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
+            MessageDialogs.msgAddvertising(this,R.layout.dialog, ((Advertising) marker.getTag()).getImage(), R.id.imageView, 5000, 1, coordLoja);
+            //MessageDialogs.msgAddvertising(this,R.layout.add_layout, ((Advertising) marker.getTag()).getImage(), R.id.img_advertising, 5000, 1);
         }
         return true;
     }
@@ -148,8 +138,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tempMarker = null;
     }
 
-    //TODO: Metodo do dialog custom
-    private void showDialog(/* COLOCAR O QUE TIVER QUE RECEBER DO SERVER E MOSTRAR*/ ){
+    @Override
+    public void moveCamera(LatLng coord) {
+        mMap.setIndoorEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coord, 17));
+    }
+
+    /*//TODO: Metodo do dialog custom
+    private void showDialog(*//* COLOCAR O QUE TIVER QUE RECEBER DO SERVER E MOSTRAR*//* ){
 
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog);
@@ -157,7 +153,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mTimerView = (TimerView) dialog.findViewById(R.id.timer);
 
         //Coloca imagem da propaganda
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.sq_popup_papel);;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.sq_popup_papel);
+
         RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(this.getResources(), bitmap);
         drawable.setCircular(true);
         Im.setImageDrawable(drawable);
@@ -171,7 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //TODO implementar thread corretamente
         mTimerView.start(TIMER_LENGTH);
-        new Thread(new Runnable() {
+        *//*new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -187,7 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
             }
-        }).start();
+        }).start();*//*
 
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,11 +192,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //TODO DESENHAR ROTA
             }
         });
-    }
+    }*/
 
     private void checkLogged(){
-        userID = getDefaultSharedPreferences(this).getInt(getResources().getString(R.string.user_id),0);
-        Log.e("USER","ID = " + userID);
+        userID = getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0);
+        Log.e("CHECK USER","ID = " + userID);
         //if(userID == 0)
         //    finish();
     }

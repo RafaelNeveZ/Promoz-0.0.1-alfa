@@ -2,9 +2,7 @@ package com.example.rafae.promoz_001_alfa;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,7 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-//import android.support.design.widget.FloatingActionButton;    // resolver import
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -24,11 +22,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.rafae.promoz_001_alfa.dao.UserDAO;
 import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.ImageUtil;
-
+import com.example.rafae.promoz_001_alfa.util.Util;
 import java.io.IOException;
 
 public class CadastrarActivity extends AppCompatActivity {
@@ -64,13 +61,13 @@ public class CadastrarActivity extends AppCompatActivity {
 
         perfilPhoto.setImageDrawable(drawable);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.change_photo);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.change_photo);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 galleyView();
             }
-        });*/ // TODO: resolver import
+        });
     }
 
     public void galleyView(){
@@ -239,7 +236,6 @@ public class CadastrarActivity extends AppCompatActivity {
                 sucess = true;
             }
 
-            //userDAO.closeDatabase();
             return sucess;
         }
         /**
@@ -261,14 +257,6 @@ public class CadastrarActivity extends AppCompatActivity {
             Long id = userDAO.save(authUser);
             authUser.set_id(id.intValue());
         }
-        /**
-         * //Login automático
-         */
-        private void setSharedPreferences(){
-            SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).edit();
-            editor.putInt(User.getChave_ID(), authUser.get_id());
-            editor.commit();
-        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -285,7 +273,8 @@ public class CadastrarActivity extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-                setSharedPreferences();
+                //Login automático
+                Util.setSharedPreferences(getApplicationContext(),authUser.get_id());
                 finish();
             } else {
                 viewEmail.setError("Usuário já cadastrado");
