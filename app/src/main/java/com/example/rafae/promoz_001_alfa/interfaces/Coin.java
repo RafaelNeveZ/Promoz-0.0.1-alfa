@@ -5,5 +5,5 @@ package com.example.rafae.promoz_001_alfa.interfaces;
  */
 
 public interface Coin {
-    void gainCoin(Integer qtd);
+    void gainCoin(Integer qtd, Integer idCoin);
 }

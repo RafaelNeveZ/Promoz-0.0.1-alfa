@@ -175,9 +175,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_network);
             setHasOptionsMenu(true);
 
-            InputFilter[] filters = new InputFilter[1];
-            filters[0] = new IpFilter(getResources().getString(R.string.expIp));
-            ((EditTextPreference) findPreference(getResources().getString(R.string.server_ip))).getEditText().setFilters(filters);
+            //InputFilter[] filters = new InputFilter[1];
+            //filters[0] = new IpFilter(getResources().getString(R.string.expIp));
+            //((EditTextPreference) findPreference(getResources().getString(R.string.server_ip))).getEditText().setFilters(filters);
             /* Bind the summaries of EditText/List/Dialog/Ringtone preferences
              to their values. When their values change, their summaries are
              updated to reflect the new value, per the Android Design

@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 
 public class PlayAudio {
     private MediaPlayer mMediaPlayer;
+    private Integer times = 1;
 
     public void stop() {
         if (mMediaPlayer != null) {
@@ -17,14 +18,21 @@ public class PlayAudio {
         }
     }
 
-    public void play(Context c, int rid) {
+    public void play(Context c, int rid, Integer repeat) {
         stop();
+        times = repeat;
 
         mMediaPlayer = MediaPlayer.create(c, rid);
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                stop();
+                times--;
+                if(times > 0) {
+                    mMediaPlayer.start();
+                } else {
+                    stop();
+                    times = 1;
+                }
             }
         });
 

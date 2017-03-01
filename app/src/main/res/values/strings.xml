@@ -29,6 +29,10 @@
     <string name="new_pass_again">Confirme sua nova senha</string>
     <string name="confirm_bt">Confirmar</string>
     <string name="cancel_bt">Cancelar</string>
+    <string name="user_name">Nome do Usuário</string>
+    <string name="user_email">usuario@promoz.com.br</string>
+    <string name="change_password">Alterar senha</string>
+    <string name="logout">Sair</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
@@ -45,6 +49,7 @@
     <string name="error_field_required">Campo obrigatório!</string>
     <string name="pref_header_network">Network</string>
     <string name="pref_title_server_ip">Server IP</string>
+    <string name="pref_title_server_address">Server Address</string>
     <string name="error_incorrect_password">Senha incorreta!</string>
     <string name="error_funny">Ops! Aconteceu algo estranho. Tente novamente!</string>
     <string name="protocol">http://</string>
@@ -60,6 +65,7 @@
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_default_ip_address">192.168.0.1</string>
     <string name="server_ip">server_ip</string>
+    <string name="server_address">server_address</string>
     <!--<string name="expIp">^\\d{1,3}(\\.(\\d{1,3}(\\.(\\d{1,3}(\\.(\\d{1,3})?)?)?)?)?)?</string>-->
     <string name="expIp">^(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9](\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9](\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])?)?)?)?)?)?</string>
 

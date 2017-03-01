@@ -30,7 +30,7 @@ public class Advertising implements ImgHttpResponseHandler.onFinishResponseImg {
         this.context = context;
     }
 
-    public  void setImage(){
+    public  void setImage() {
         this.responseHandler = new ImgHttpResponseHandler();
         client = new AsyncHttpClient();
         this.responseHandler.setCallback(this);

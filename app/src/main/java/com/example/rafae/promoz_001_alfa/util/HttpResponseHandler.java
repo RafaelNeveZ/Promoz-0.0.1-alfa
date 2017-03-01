@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import cz.msebera.android.httpclient.Header;
@@ -49,13 +50,13 @@ public class HttpResponseHandler extends AsyncHttpResponseHandler {
     private void setAdvertisings() {
 
         this.advertisings.clear();
-        Advertising advertising = new Advertising(this.context);
         try {
             JSONObject jsonObject = new JSONObject(this.response);
 
             JSONArray jsonArray = jsonObject.getJSONArray(this.nameObj);
 
-            for(int i = 0; i < jsonArray.length(); i++) {
+            for(int i = 0; i < jsonArray.length(); i++) { // TODO: Remover campos não utilizados da consulta
+                Advertising advertising = new Advertising(this.context);
                 JSONObject obj = jsonArray.getJSONObject(i);
                 advertising.setId(obj.getInt("_id"));
                 advertising.setIdStore(obj.getInt("id_store"));

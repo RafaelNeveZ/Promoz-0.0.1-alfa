@@ -40,7 +40,7 @@ public class MessageDialogs {
         Toast.makeText(context, error, Toast.LENGTH_LONG).show();
     }
 
-    public static void msgAddvertising(final Activity activity, int layoutId, byte[] image, int imageId, Integer timeMs, final Integer amountCoin, final LatLng coordLoja) {
+    public static void msgAddvertising(final Activity activity, int layoutId, byte[] image, int imageId, Integer timeMs, final Integer amountCoin, final Integer idCoin, final LatLng coordLoja) {
 
         final Dialog alert = new Dialog(activity);
         alert.setContentView(layoutId);
@@ -57,14 +57,16 @@ public class MessageDialogs {
 
         final Button bt = (Button)alert.findViewById(R.id.bot);
         bt.setEnabled(false);
+        bt.setVisibility(View.INVISIBLE);
         alert.show();
 
         final CountDownTimer countDownTimer = new CountDownTimer(timeMs, timeMs) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
                 bt.setEnabled(true);
+                bt.setVisibility( View.VISIBLE);
                 Coin callback = (Coin) activity;
-                callback.gainCoin(amountCoin);
+                callback.gainCoin(amountCoin, idCoin);
             }
         };
         timerView.start(timeMs/1000);

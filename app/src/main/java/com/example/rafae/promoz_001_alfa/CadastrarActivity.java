@@ -33,7 +33,7 @@ public class CadastrarActivity extends AppCompatActivity {
     private int STORAGE_PERMISSION_CODE = 23;
     private int SELECT_IMAGE = 1;
     private RoundedBitmapDrawable drawable=null;
-    private User user = null;
+//    private User user = null;
     private CadastrarActivity.UserLoginTask mAuthTask = null;
     private TextView viewName;
     private TextView viewEmail;
@@ -235,7 +235,6 @@ public class CadastrarActivity extends AppCompatActivity {
                 createUser(userDAO);
                 sucess = true;
             }
-
             return sucess;
         }
         /**
@@ -244,7 +243,7 @@ public class CadastrarActivity extends AppCompatActivity {
          */
         private void createUser(UserDAO userDAO) {
 
-            user = new User();
+          //  user = new User();
             authUser = new User();
 
             if(drawable != null)
