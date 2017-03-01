@@ -18,6 +18,17 @@
     <string name="google">Google</string>
     <string name="cadastrar">Cadastrar</string>
     <string name="entrar">Entrar</string>
+    <string name="camposNovaSenha">Os campos da nova senha devem ser iguais.</string>
+    <string name="senhaAtualErrada">A senha atual esta incorreta.</string>
+    <string name="senhaAtualizada">Senha atualizada.</string>
+    <string name="yes_bt">Sim</string>
+    <string name="yes_bt_funny">Depois eu volto!</string>
+    <string name="no_bt_funny">Quero ficar!</string>
+    <string name="now_pass">Digite sua senha atual</string>
+    <string name="new_pass">Digite sua nova senha</string>
+    <string name="new_pass_again">Confirme sua nova senha</string>
+    <string name="confirm_bt">Confirmar</string>
+    <string name="cancel_bt">Cancelar</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

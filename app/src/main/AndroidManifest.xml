@@ -49,7 +49,8 @@
             android:label="@string/title_activity_settings" />
         <activity android:name=".MapsActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".CadastrarActivity"></activity>
+        <activity android:name=".CadastrarActivity" />
+        <activity android:name=".PerfilActivity"></activity>
     </application>
 
 </manifest>

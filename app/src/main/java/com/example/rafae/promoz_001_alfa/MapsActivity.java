@@ -73,6 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 16));
 
         mMap.setOnMarkerClickListener(this);
+
+        // ##################################### inicia activity Setting
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -197,7 +199,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void checkLogged(){
         userID = getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0);
         Log.e("CHECK USER","ID = " + userID);
-        //if(userID == 0)
-        //    finish();
+        if(userID == 0)
+            finish();
     }
 }
