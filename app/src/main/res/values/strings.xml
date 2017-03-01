@@ -3,7 +3,21 @@
     <string name="app_name">Promoz-0.0.1-alfa</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_settings">Settings</string>
-
+    <string name="prompt_user">Email/Usuário</string>
+    <string name="prompt_name">Nome</string>
+    <string name="prompt_cpf">CPF</string>
+    <string name="why_need_cpf"><a href="http://www.consultec.com.br/inscbd/2005insc/logos/960.jpg">Por que pedimos seu CPF?</a></string>
+    <string name="prompt_password">Senha</string>
+    <string name="prompt_password_again">Confirme sua senha</string>
+    <string name="action_sign_up">Cadastrar</string>
+    <string name="action_sign_in_short">Entrar</string>
+    <string name="prompt_email">Login</string>
+    <string name="defaultpassword"><a href="https://goo.gl/fTc4Ae">Esqueceu a senha?</a></string>
+    <string name="promoz">PromoZ</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="entrar">Entrar</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
@@ -14,14 +28,18 @@
     <string name="error_user_by_id">Erro ao buscar usuário!</string>
     <string name="error_funny_db">Ops! Aconteceu algo estranho. Recomendamos reiniciar o app!</string>
     <string name="user_id">_ID</string>
-
-
+    <string name="terms">Ao me cadastrar, eu concordo com os Termos de Serviço e Termos de Política de Privacidade do PromoZ.</string>
+    <string name="error_invalid_email">Login inválido!</string>
+    <string name="error_invalid_password">Pass</string>
+    <string name="error_field_required">Campo obrigatório!</string>
     <string name="pref_header_network">Network</string>
     <string name="pref_title_server_ip">Server IP</string>
+    <string name="error_incorrect_password">Senha incorreta!</string>
+    <string name="error_funny">Ops! Aconteceu algo estranho. Tente novamente!</string>
     <string name="protocol">http://</string>
     <string name="image_directory">/advertising/</string>
     <string name="pref_header_general">General</string>
-
+    <string name="error_login">Usuário não cadastrado!</string>
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
         based on your message history
