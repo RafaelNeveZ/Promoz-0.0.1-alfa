@@ -14,6 +14,8 @@
     <color name="colorVerdeMoeda">#24a11d</color>
     <color name="colorFacebook">#3d5b97</color>
     <color name="colorgoogle">#dd4c39</color>
-
+    <color name="timer_circle">#24a11d</color>
+    <color name="colorVerdeEnable">#24a11d</color>
+    <color name="colorVerdeDisable">#13550f</color>
 
 </resources>

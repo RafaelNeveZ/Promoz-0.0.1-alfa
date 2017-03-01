@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:srcCompat="@drawable/sq_popup_renner"
+        android:id="@+id/imageView"
+        android:padding="3dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <com.example.rafae.promoz_001_alfa.util.TimerView
+        android:id="@+id/timer"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:circleColor="@color/timer_circle"/>
+
+
+    <Button
+        android:text="Ir para loja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bot"
+        android:paddingRight="56dp"
+        android:paddingLeft="56dp"
+        android:textSize="20dp"
+        android:background="@drawable/buttom_goshop"
+        android:textColor="@drawable/text_buttom_color_loja"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="279dp" />
+
+</RelativeLayout>

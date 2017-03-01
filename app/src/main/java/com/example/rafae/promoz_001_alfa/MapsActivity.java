@@ -1,12 +1,19 @@
 package com.example.rafae.promoz_001_alfa;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
@@ -16,6 +23,7 @@ import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.PlayAudio;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
+import com.example.rafae.promoz_001_alfa.util.TimerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -40,6 +48,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AsyncHttpClient client;
     private List<Integer> addedMarkers = new ArrayList<Integer>();
     Marker tempMarker;
+    final private Context context = this;
+
+    private static final int TIMER_LENGTH = 5;
+
+    private TimerView mTimerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 context.startActivity(intent);
             }
         });
+        showDialog();
     }
 
     @Override
@@ -132,6 +146,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void resetMarker() {
         tempMarker = null;
+    }
+
+    //TODO: Metodo do dialog custom
+    private void showDialog(/* COLOCAR O QUE TIVER QUE RECEBER DO SERVER E MOSTRAR*/ ){
+
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog);
+        ImageView Im = (ImageView)dialog.findViewById(R.id.imageView);
+        mTimerView = (TimerView) dialog.findViewById(R.id.timer);
+
+        //Coloca imagem da propaganda
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.sq_popup_papel);;
+        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(this.getResources(), bitmap);
+        drawable.setCircular(true);
+        Im.setImageDrawable(drawable);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.show();
+
+
+        //Botão
+        final Button bt = (Button)dialog.findViewById(R.id.bot);
+        bt.setEnabled(false);
+
+        //TODO implementar thread corretamente
+        mTimerView.start(TIMER_LENGTH);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                MapsActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bt.setEnabled(true);
+                    }
+                });
+            }
+        }).start();
+
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+           public void onClick(View v) {
+                //TODO DESENHAR ROTA
+            }
+        });
     }
 
     private void checkLogged(){
