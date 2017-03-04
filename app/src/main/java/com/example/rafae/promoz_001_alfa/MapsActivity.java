@@ -85,6 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapLongClick(LatLng latLng) {
                 Context context = getApplicationContext();
                 Intent intent = new Intent(context,SettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
@@ -182,7 +183,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 Toast.makeText(this, "Pressione o botão voltar novamente para sair do aplicativo", Toast.LENGTH_SHORT).show();
                 backButtonCount++;
-                new CountDownTimer(countDown, countDown) {
+                new CountDownTimer(countDown, 5000) {
                     public void onTick(long millisUntilFinished) {
                     }
                     public void onFinish() {
@@ -191,7 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }.start();
             }
         }
-        super.onBackPressed();
+
     }
 
     /*//TODO: Metodo do dialog custom
@@ -243,7 +244,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }*/
-
     private void checkLogged(){
         userID = getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0);
         Log.e("CHECK USER","ID = " + userID);
