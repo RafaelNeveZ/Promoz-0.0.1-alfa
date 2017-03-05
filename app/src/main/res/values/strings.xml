@@ -54,6 +54,15 @@
     <string name="error_funny">Ops! Aconteceu algo estranho. Tente novamente!</string>
     <string name="protocol">http://</string>
     <string name="image_directory">/advertising/</string>
+    <!-- Strings related to Cupom -->
+    <string name="go_to_shop">IR PARA LOJA</string>
+    <!-- Carteira -->
+    <string name="saldo_atual">Saldo atual</string>
+    <string name="out_of_money">0</string>
+    <string name="menu_wallet">Carteira</string>
+    <string name="sete_dias">7 DIAS</string>
+    <string name="quinze_dias">15 DIAS</string>
+    <string name="trinta_dias">30 DIAS</string>
     <string name="pref_header_general">General</string>
     <string name="error_login">Usuário não cadastrado!</string>
     <string name="pref_title_social_recommendations">Enable social recommendations</string>

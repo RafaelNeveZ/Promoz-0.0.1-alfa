@@ -35,10 +35,11 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     private static final int REQ_PERMISSION = 1;
     private static final long GEO_DURATION = 24 * 60 * 60 * 1000;
     private static final String GEOFENCE_REQ_ID = "My Geofence";
-    private static final float GEOFENCE_RADIUS = 100.0f; // in meters
+    private static final float GEOFENCE_RADIUS = 1.0f; // in meters
     private PendingIntent geoFencePendingIntent;
     private final int GEOFENCE_REQ_CODE = 0;
-    private final LatLng latlong =new LatLng(-12.9649743,-38.4314574);
+//    private final LatLng latlong =new LatLng(-12.9649743,-38.4314574);
+private final LatLng latlong =new LatLng(-12.717127,-38.312073);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

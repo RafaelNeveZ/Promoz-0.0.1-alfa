@@ -200,6 +200,6 @@ public final class PromozContract {
 
     public static final String tablesCreationList[] = {User.SQL_CREATE_USER,Wallet.SQL_CREATE_WALLET,
             HistoricTypeCoin.SQL_CREATE_HISTORIC_TYPE_COIN, HistoricCoin.SQL_CREATE_HISTORIC_COIN,
-            Triger.TRIGER_USER_WALLET, Triger.TRIGER_WALLET_BALANCE
+            Coupon.SQL_CREATE_COUPON, Triger.TRIGER_USER_WALLET, Triger.TRIGER_WALLET_BALANCE
     };
 }

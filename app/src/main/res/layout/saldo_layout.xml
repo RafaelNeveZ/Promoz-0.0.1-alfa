@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_background"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="@dimen/activity_horizontal_margin"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/saldo_atual"
+            android:layout_marginRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorCinzaSaldo"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/colorCinzaSaldo"
+            android:layout_marginRight="10dp"
+            android:layout_weight="2"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/out_of_money"
+            android:id="@+id/saldoCarteira"
+            android:layout_marginRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorVerdeMoeda"
+            />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/moeda"
+            />
+    </LinearLayout>
+
+    <!-- <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textSize="23dp"
+         android:text="Histórico"
+         android:layout_marginLeft="30dp" />
+         -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_background"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal"
+        android:gravity="top|center"
+        >
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:checkedButton="@+id/seteDias"
+            >
+            <RadioButton
+                android:id="@+id/seteDias"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:text="@string/sete_dias"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:textColor="@drawable/text_buttom_color"
+                android:background="@drawable/buttom_sete_background"
+                android:padding="10dp"
+                android:textAlignment="center"
+                />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:text="@string/quinze_dias"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:textColor="@drawable/text_buttom_color"
+                android:background="@drawable/buttom_quinze_background"
+                android:id="@+id/quinzeDias" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:layout_weight="1"
+                android:text="@string/trinta_dias"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:padding="10dp"
+                android:textColor="@drawable/text_buttom_color"
+                android:background="@drawable/buttom_trinta_background"
+                android:id="@+id/trintaDias" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/historic_list"
+        android:background="@color/colorSecondary"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin">
+    </ListView>
+
+
+</LinearLayout>

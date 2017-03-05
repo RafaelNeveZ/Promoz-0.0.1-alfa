@@ -4,18 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.rafae.promoz_001_alfa.dao.HistoricCoinDAO;
+import com.example.rafae.promoz_001_alfa.dao.WalletDAO;
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
 import com.example.rafae.promoz_001_alfa.model.Advertising;
+import com.example.rafae.promoz_001_alfa.model.HistoricCoin;
+import com.example.rafae.promoz_001_alfa.model.User;
+import com.example.rafae.promoz_001_alfa.util.DateUtil;
 import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.PlayAudio;
+import com.example.rafae.promoz_001_alfa.util.PromozLocation;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,11 +34,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.AsyncHttpClient;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers, PromozLocation.connected {
 
     Integer userID=-1;
     int backButtonCount = 0;
@@ -42,9 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AsyncHttpClient client;
     private List<Integer> addedMarkers = new ArrayList<Integer>();
     Marker tempMarker;
-//    final private Context context = this;
-//    private static final int TIMER_LENGTH = 5;
-//    private TimerView mTimerView;
+    private PromozLocation promozLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkLogged();
 
+        promozLocation = new PromozLocation(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.moeda_marker);
@@ -61,6 +70,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client = new AsyncHttpClient();
         responseHandler = new HttpResponseHandler(this);
         responseHandler.setCallback(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        promozLocation.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        promozLocation.disconnect();
     }
 
     @Override
@@ -112,7 +133,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void finished() {
         List<Advertising> advertisings = responseHandler.getAdvertisings();
 
-
         for (Advertising add : advertisings) {
         //for (int i=0;i<advertisings.size();i++) {
           //  Advertising add = null;
@@ -140,12 +160,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void gainCoin(Integer qtd, Integer idCoin) {
         PlayAudio audio = new PlayAudio();
-        for(int i = 0; i< qtd; i++)
-            audio.play(this,R.raw.smw_coin, 1);
+        //for(int i = 0; i< qtd; i++)
+        audio.play(this,R.raw.smw_coin, 1);
+        Log.e("TAG","QTD = " + qtd);
 
-        // TODO: adicinar moeda(s) na carteira
+        addCoin(qtd);
+
         addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
         tempMarker.remove();
+    }
+
+    private void addCoin(Integer amountCoin) {
+        WalletDAO wallet = new WalletDAO(this);
+        Integer walletId = wallet.walletIdByUserId(userID);
+        String date = new SimpleDateFormat(DateUtil.YYYYMMDD_HHmmss).format(new Date());
+        HistoricCoin historicCoin = new HistoricCoin(walletId,1,date,amountCoin,0);
+        HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
+        historicCoinDAO.save(historicCoin);
+        wallet.closeDataBase();
+        historicCoinDAO.closeDataBase();
+
+        Intent intent = new Intent(this,CarteiraActivity.class);
+        intent.putExtra(User.getChave_ID(),userID);
+        this.startActivity(intent);
     }
 
     @Override
@@ -192,7 +229,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }.start();
             }
         }
-
     }
 
     /*//TODO: Metodo do dialog custom
@@ -246,8 +282,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }*/
     private void checkLogged(){
         userID = getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0);
-        Log.e("CHECK USER","ID = " + userID);
         if(userID == 0)
             finish();
+    }
+
+    @Override
+    public void onConnected() {
+        Location local = promozLocation.getLocation();
+        if(local != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(local.getLatitude(),local.getLongitude()), 12));
+        }
     }
 }
