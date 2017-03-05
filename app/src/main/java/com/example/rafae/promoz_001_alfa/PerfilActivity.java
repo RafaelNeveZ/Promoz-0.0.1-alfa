@@ -30,6 +30,8 @@ import com.example.rafae.promoz_001_alfa.dao.UserDAO;
 import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.ImageUtil;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 public class PerfilActivity extends AppCompatActivity {
 
     private int STORAGE_PERMISSION_CODE = 23;
@@ -43,7 +45,8 @@ public class PerfilActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_perfil);
 
-        userId = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).getInt(User.getChave_ID(),1);
+        //userId = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).getInt(User.getChave_ID(),1);
+        userId = getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0);
 
         //Trocando foto
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.change_photo);

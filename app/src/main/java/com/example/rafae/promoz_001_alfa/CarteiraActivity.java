@@ -19,7 +19,6 @@ public class CarteiraActivity extends AppCompatActivity implements CarteiraPageF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //userId = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).getInt(User.getChave_ID(),1);
         userId = getDefaultSharedPreferences(getApplicationContext()).getInt(getResources().getString(R.string.user_id),0);
         setContentView(R.layout.activity_carteira);
 

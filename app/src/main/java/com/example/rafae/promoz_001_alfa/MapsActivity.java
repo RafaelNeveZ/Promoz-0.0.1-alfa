@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -162,10 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         PlayAudio audio = new PlayAudio();
         //for(int i = 0; i< qtd; i++)
         audio.play(this,R.raw.smw_coin, 1);
-        Log.e("TAG","QTD = " + qtd);
-
         addCoin(qtd);
-
         addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
         tempMarker.remove();
     }
@@ -180,6 +179,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         wallet.closeDataBase();
         historicCoinDAO.closeDataBase();
 
+        // ########################### TEMPORARIO
         Intent intent = new Intent(this,CarteiraActivity.class);
         intent.putExtra(User.getChave_ID(),userID);
         this.startActivity(intent);
@@ -290,7 +290,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnected() {
         Location local = promozLocation.getLocation();
         if(local != null) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(local.getLatitude(),local.getLongitude()), 12));
+            LatLng latLng = new LatLng(local.getLatitude(),local.getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            //if(promozLocation.checkPermission())
+            //    mMap.setMyLocationEnabled(true);
+            //CircleOptions circulo = new CircleOptions().center(latLng);
+            //circulo.fillColor(Color.RED);
+            //circulo.radius(25);
+            //mMap.clear();
+            //mMap.addCircle(circulo);
         }
     }
 }
