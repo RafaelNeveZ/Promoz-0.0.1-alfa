@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ public class StartScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("TAG","Abri STARTSCREEN");
         checkLogged();
         setContentView(R.layout.activity_start_screen);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -60,7 +62,7 @@ public class StartScreenActivity extends AppCompatActivity {
     }
 
     private void loadMain(){
-        Intent intent = new Intent(this,MapsActivity.class);
+        Intent intent = new Intent(this,MainActivity.class);
         this.startActivity(intent);
     }
 

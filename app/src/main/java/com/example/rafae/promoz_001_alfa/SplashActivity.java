@@ -44,6 +44,8 @@ private final LatLng latlong =new LatLng(-12.717127,-38.312073);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         createGoogleApi();
 
@@ -55,8 +57,9 @@ private final LatLng latlong =new LatLng(-12.717127,-38.312073);
         return false;
     }
     private void loadMain(){
-        Intent intent = new Intent(this,MapsActivity.class);
+        Intent intent = new Intent(this,StartScreenActivity.class);
         this.startActivity(intent);
+        finish();
     }
     // Create GoogleApiClient instance
     private void createGoogleApi() {
@@ -95,7 +98,7 @@ private final LatLng latlong =new LatLng(-12.717127,-38.312073);
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "onConnected()");
-        Toast.makeText(this, "Conectei", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "Conectei", Toast.LENGTH_SHORT).show();
         if ( checkPermission() ) {
             startGeofence();
             timerSplash();
@@ -226,7 +229,7 @@ private final LatLng latlong =new LatLng(-12.717127,-38.312073);
                 } catch (Exception e) {
 
                 } finally {
-
+                    Log.d("TAG","Abri SPLASH");
                     Intent i = new Intent(SplashActivity.this,
                             StartScreenActivity.class);
                     startActivity(i);

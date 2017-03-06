@@ -3,6 +3,7 @@
     <string name="app_name">Promoz-0.0.1-alfa</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
     <string name="prompt_user">Email/Usuário</string>
     <string name="prompt_name">Nome</string>
     <string name="prompt_cpf">CPF</string>
@@ -33,6 +34,22 @@
     <string name="user_email">usuario@promoz.com.br</string>
     <string name="change_password">Alterar senha</string>
     <string name="logout">Sair</string>
+    <!-- Strings related to Loja -->
+    <string name="buy">Comprar</string>
+    <!-- Nav Menu -->
+    <string name="menu_perfil">Perfil</string>
+    <string name="menu_missions">Missões</string>
+    <string name="menu_shop">Loja</string>
+    <string name="menu_config">Configurações</string>
+    <string name="menu_help">Ajuda</string>
+    <string name="menu_feedback">Enviar feedback</string>
+    <string name="menu_terms">Termos de Serviço</string>
+    <string name="title_activity_carteira">CarteiraActivity</string>
+    <string name="title_activity_perfil">Perfil</string>
+    <string name="title_activity_shop">Loja</string>
+    <string name="title_activity_cadastrar">Cadastrar</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
@@ -137,6 +154,12 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="title_activity_main">PromoZ</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>
 

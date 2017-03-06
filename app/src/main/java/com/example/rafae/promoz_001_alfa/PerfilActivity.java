@@ -29,6 +29,7 @@ import java.io.IOException;
 import com.example.rafae.promoz_001_alfa.dao.UserDAO;
 import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.ImageUtil;
+import com.example.rafae.promoz_001_alfa.util.Util;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -110,9 +111,10 @@ public class PerfilActivity extends AppCompatActivity {
                 btY.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).edit();
+                        /*SharedPreferences.Editor editor = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE).edit();
                         editor.putInt(User.getChave_ID(), 0);
-                        editor.commit();
+                        editor.commit();*/
+                        Util.setSharedPreferences(getApplicationContext(),0);
                         dialog.dismiss();
                         finish();
                     }
