@@ -97,15 +97,15 @@ public class HistoricCoinDAO extends PromozContract.HistoricCoin {
         return lst;
     }
 
-    public Integer countByCoinId(Integer coinId) {
+    public boolean isCoinIdAdded(Integer coinId, Integer walletId) {
 
-        String selection = COLUMN_COIN_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(coinId)};
-        cursor = database.query(TABLE_NAME, allFields, selection, selectionArgs, null, null, null);
+        String selection = COLUMN_COIN_ID + " = ? and " + COLUMN_WALLET_ID + " = ?";
+        String[] selectionArgs = { String.valueOf(coinId), String.valueOf(walletId)};
+        Cursor cursor = database.query(TABLE_NAME, allFields, selection, selectionArgs, null, null, null);
         Integer qtd = cursor.getCount();
         cursor.close();
 
-        return qtd;
+        return qtd != 0;
     }
 
     //TODO never used

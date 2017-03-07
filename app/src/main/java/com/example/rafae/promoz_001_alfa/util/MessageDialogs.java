@@ -86,7 +86,7 @@ public class MessageDialogs {
             public void onClick(View v) {
                 //TODO DESENHAR ROTA
                 Markers callback = (Markers) activity;
-                callback.moveCamera(coordLoja);
+                callback.makeRoute(coordLoja);
                 alert.dismiss();
             }
         });

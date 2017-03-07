@@ -9,4 +9,5 @@ import com.google.android.gms.maps.model.LatLng;
 public interface Markers {
     void resetMarker();
     void moveCamera(LatLng coord);
+    void makeRoute(LatLng coordLoja);
 }

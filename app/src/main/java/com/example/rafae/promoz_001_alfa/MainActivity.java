@@ -48,6 +48,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.AsyncHttpClient;
 
 import java.text.SimpleDateFormat;
@@ -72,8 +74,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<Integer> addedMarkers = new ArrayList<Integer>();
     private Marker tempMarker;
     private PromozLocation promozLocation;
-    private ImageView foto,fotoclick;
+    private ImageView foto;
     private final Context context =this;
+    private LatLng latLngAtual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +132,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 context.startActivity(intent);
             }
         });
-
-        serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
 
         setMenu();
     }
@@ -188,9 +189,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -218,14 +216,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
           //  this.startActivity(intent);
 
         } else if (id == R.id.nav_config) {
-            //Context contexto = getApplicationContext();
             Intent intent = new Intent(context,SettingsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-            //String texto = "CONFIGURAÇÕES";
-            //int duracao = Toast.LENGTH_SHORT;
-            //Toast toast = Toast.makeText(contexto, texto,duracao);
-            //toast.show();
 
         } else if (id == R.id.nav_help) {
             Context contexto = getApplicationContext();
@@ -269,18 +262,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng tamari = new LatLng(-12.964996, -38.431504);
-        /*LatLng extra = new LatLng(-12.9629824, -38.4322472);
-        LatLng unifacs = new LatLng(-12.9611188, -38.4321055);*/
         LatLng ruy = new LatLng(-12.960244, -38.431348);
         LatLngBounds Imbui = new LatLngBounds(tamari, ruy);
-        //mMap.addMarker(new MarkerOptions().position(tamari).title("Marker no Tamari").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        //mMap.addMarker(new MarkerOptions().position(extra).title("Marker no Extra").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        //mMap.addMarker(new MarkerOptions().position(unifacs).title("Marker no Facs").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        //mMap.addMarker(new MarkerOptions().position(ruy).title("Marker no Ruy").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 12));
 
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
+        serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
     }
 
     @Override
@@ -291,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Advertising add = (Advertising) tempMarker.getTag();
             LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
             MessageDialogs.msgAddvertising(this,R.layout.dialog, add.getImage(), R.id.imageView, 5000, add.getQtdCoin(), add.getId(), coordLoja);
-            //MessageDialogs.msgAddvertising(this,R.layout.add_layout, ((Advertising) marker.getTag()).getImage(), R.id.img_advertising, 5000, 1);
         }
         return true;
     }
@@ -301,33 +288,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<Advertising> advertisings = responseHandler.getAdvertisings();
 
         for (Advertising add : advertisings) {
-            //for (int i=0;i<advertisings.size();i++) {
-            //  Advertising add = null;
-            //  add = advertisings.get(i);
-
-            if (addedMarkers.indexOf(add.getId()) == -1) { // TODO: consultar carteira existencia de moeda já coletada
+            HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
+            WalletDAO wallet = new WalletDAO(this);
+            Integer walletId = wallet.walletIdByUserId(userID);
+            if (!historicCoinDAO.isCoinIdAdded(add.getId(),walletId)) {
                 addedMarkers.add(add.getId());
                 LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
                 mMap.addMarker((new MarkerOptions().position(coordLoja).title(add.getTitle()).icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(add.getId().toString()))).setTag(add);
                 add.setImage();
-                // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(add.getLat(),add.getLng()), 16));
             }
         }
-
         responseHandler.clearAdvertisings();
-/*        LatLng ljAmeric = new LatLng(-12.9770046, -38.4559200);
-        LatLng bomPrec = new LatLng(-12.9798411, -38.4536884);
-        LatLngBounds salvadorShopping = new LatLngBounds(bomPrec, ljAmeric);
-        Log.e("LAT LONG","" + salvadorShopping.getCenter().toString());
-        //CameraPosition camPos = new CameraPosition();
-       //  mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(salvadorShopping, 18));
-       //   mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(salvadorShopping.getCenter(), 18));*/
     }
 
     @Override
     public void gainCoin(Integer qtd, Integer idCoin) {
         PlayAudio audio = new PlayAudio();
-        //for(int i = 0; i< qtd; i++)
         audio.play(this,R.raw.smw_coin, 1);
         addCoin(qtd, ((Advertising) tempMarker.getTag()).getId());
         addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
@@ -384,30 +360,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(local != null) {
             LatLng latLng = new LatLng(local.getLatitude(),local.getLongitude());
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
-            //if(promozLocation.checkPermission())
-            //    mMap.setMyLocationEnabled(true);
-            //CircleOptions circulo = new CircleOptions().center(latLng);
-            //circulo.fillColor(Color.RED);
-            //circulo.radius(25);
-            //mMap.clear();
-            //mMap.addCircle(circulo);
         }
     }
 
-
+    @Override
+    public void makeRoute(LatLng coordLoja) {
+        PolylineOptions linha = new PolylineOptions();
+        linha.add(latLngAtual);
+        linha.add(coordLoja);
+        linha.color(Color.argb(85, 200, 100,100));
+        Polyline polyline = mMap.addPolyline(linha);
+        polyline.setGeodesic(true);
+    }
 
     @Override
     public void onMapClick(LatLng latLng) {
         mMap.clear();
+        latLngAtual = latLng;
         addedMarkers.clear();
         Integer raio = 100;
         CircleOptions circulo = new CircleOptions().center(latLng);
         circulo.fillColor(Color.argb(60,200,150,150)).strokeWidth(1);
         circulo.radius(raio);
-
         mMap.addCircle(circulo);
-        mMap.addMarker(new MarkerOptions()
-                .position(latLng));
         client.get(serverURL + "?lat="+latLng.latitude+"&long="+latLng.longitude+"&dist="+raio, responseHandler);
     }
 }

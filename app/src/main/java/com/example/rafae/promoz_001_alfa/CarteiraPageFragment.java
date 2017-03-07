@@ -77,8 +77,6 @@ public class CarteiraPageFragment extends Fragment {
         historicCoinList = historicCoinDAO.listByDate(walletID,date);
         historicAdapter = new HistoricAdapter(getContext(),historicCoinList);
         listhistoric.setAdapter(historicAdapter);
-
-      //  Log.e("setHistoricDate","countByCoinId - " + historicCoinDAO.list().size());
     }
 
     @Override
