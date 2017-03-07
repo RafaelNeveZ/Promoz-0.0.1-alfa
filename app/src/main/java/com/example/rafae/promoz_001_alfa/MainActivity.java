@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +43,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -58,20 +57,23 @@ import java.util.List;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers, PromozLocation.connected {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers,
+        PromozLocation.connected, GoogleMap.OnMapClickListener {
 
-    Integer userID=-1;
-    int backButtonCount = 0;
-    int countDown = 10000;
+    private Integer userID=-1;
+    private String serverURL;
+    private int backButtonCount = 0;
+    private int countDown = 10000;
     private GoogleMap mMap;
-    Bitmap bmp;
+    private Bitmap bmp;
     private HttpResponseHandler responseHandler;
     private AsyncHttpClient client;
     private List<Integer> addedMarkers = new ArrayList<Integer>();
-    Marker tempMarker;
+    private Marker tempMarker;
     private PromozLocation promozLocation;
     private ImageView foto,fotoclick;
-    final Context context =this;
+    private final Context context =this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 context.startActivity(intent);
             }
         });
+
+        serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
+
         setMenu();
     }
 
@@ -268,22 +273,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LatLng unifacs = new LatLng(-12.9611188, -38.4321055);*/
         LatLng ruy = new LatLng(-12.960244, -38.431348);
         LatLngBounds Imbui = new LatLngBounds(tamari, ruy);
-        mMap.addMarker(new MarkerOptions().position(tamari).title("Marker no Tamari").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+        //mMap.addMarker(new MarkerOptions().position(tamari).title("Marker no Tamari").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         //mMap.addMarker(new MarkerOptions().position(extra).title("Marker no Extra").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         //mMap.addMarker(new MarkerOptions().position(unifacs).title("Marker no Facs").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-        mMap.addMarker(new MarkerOptions().position(ruy).title("Marker no Ruy").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+        //mMap.addMarker(new MarkerOptions().position(ruy).title("Marker no Ruy").icon(BitmapDescriptorFactory.fromBitmap(bmp)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 12));
 
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(this);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         marker.hideInfoWindow();
-        if(marker.getTag() == null) {
-            String serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
-            client.get(serverURL + "?lat=-12.9790&long=-38.4532&dist=560", responseHandler);
-        }else{
+        if(marker.getTag() != null) {
             tempMarker = marker;
             Advertising add = (Advertising) tempMarker.getTag();
             LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
@@ -389,5 +392,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //mMap.clear();
             //mMap.addCircle(circulo);
         }
+    }
+
+
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        mMap.clear();
+        addedMarkers.clear();
+        Integer raio = 100;
+        CircleOptions circulo = new CircleOptions().center(latLng);
+        circulo.fillColor(Color.argb(60,200,150,150)).strokeWidth(1);
+        circulo.radius(raio);
+
+        mMap.addCircle(circulo);
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng));
+        client.get(serverURL + "?lat="+latLng.latitude+"&long="+latLng.longitude+"&dist="+raio, responseHandler);
     }
 }
