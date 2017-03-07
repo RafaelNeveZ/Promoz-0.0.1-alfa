@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("TAG","Abri o certo");
         checkLogged();
         promozLocation = new PromozLocation(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.startActivity(intent);
         } else if (id == R.id.nav_missions) {
             Context contexto = getApplicationContext();
-            String texto = "MISSÔES";
+            String texto = "MISSÕES";
             int duracao = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(contexto, texto,duracao);
             toast.show();
@@ -214,11 +213,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
           //  this.startActivity(intent);
 
         } else if (id == R.id.nav_config) {
-            Context contexto = getApplicationContext();
-            String texto = "CONFIGURAÇÕES";
-            int duracao = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(contexto, texto,duracao);
-            toast.show();
+            //Context contexto = getApplicationContext();
+            Intent intent = new Intent(context,SettingsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            //String texto = "CONFIGURAÇÕES";
+            //int duracao = Toast.LENGTH_SHORT;
+            //Toast toast = Toast.makeText(contexto, texto,duracao);
+            //toast.show();
 
         } else if (id == R.id.nav_help) {
             Context contexto = getApplicationContext();
@@ -273,18 +275,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 12));
 
         mMap.setOnMarkerClickListener(this);
-
-        // ##################################### inicia activity Setting
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                Context context = getApplicationContext();
-                Intent intent = new Intent(context,SettingsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        });
-        // showDialog();
     }
 
     @Override
@@ -336,25 +326,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PlayAudio audio = new PlayAudio();
         //for(int i = 0; i< qtd; i++)
         audio.play(this,R.raw.smw_coin, 1);
-        addCoin(qtd);
+        addCoin(qtd, ((Advertising) tempMarker.getTag()).getId());
         addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
         tempMarker.remove();
     }
 
-    private void addCoin(Integer amountCoin) {
+    private void addCoin(Integer amountCoin, Integer coinId) {
         WalletDAO wallet = new WalletDAO(this);
         Integer walletId = wallet.walletIdByUserId(userID);
         String date = new SimpleDateFormat(DateUtil.YYYYMMDD_HHmmss).format(new Date());
-        HistoricCoin historicCoin = new HistoricCoin(walletId,1,date,amountCoin,0);
+        HistoricCoin historicCoin = new HistoricCoin(walletId,1,date,amountCoin,coinId);
         HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
         historicCoinDAO.save(historicCoin);
         wallet.closeDataBase();
         historicCoinDAO.closeDataBase();
-
-        // ########################### TEMPORARIO
-        Intent intent = new Intent(this,CarteiraActivity.class);
-        intent.putExtra(User.getChave_ID(),userID);
-        this.startActivity(intent);
     }
 
     @Override

@@ -1,10 +1,11 @@
-package com.example.rafae.promoz_001_alfa;
+package com.example.rafae.promoz_001_alfa.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.dao.db.AppDatabase;
 import com.example.rafae.promoz_001_alfa.dao.db.PromozContract;
 import com.example.rafae.promoz_001_alfa.model.Coupon;

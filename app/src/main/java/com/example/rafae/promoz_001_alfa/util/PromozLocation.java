@@ -34,11 +34,13 @@ public class PromozLocation implements GoogleApiClient.ConnectionCallbacks,
     public PromozLocation(Context context) {
 
         this.context = context;
-        googleApiClient = new GoogleApiClient.Builder(context)
+        if(googleApiClient == null){
+            googleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        }
 
         callback = (connected) context;
     }

@@ -218,14 +218,14 @@ private final LatLng latlong =new LatLng(-12.717127,-38.312073);
         Log.d(TAG, "onLocationChanged ["+location+"]");
     }
 
-    public void timerSplash(){
+    public void timerSplash() {
         Thread splashThread = new Thread() {
 
             @Override
             public void run() {
                 try {
                     super.run();
-                    sleep(2000);
+                    sleep(1000);
                 } catch (Exception e) {
 
                 } finally {

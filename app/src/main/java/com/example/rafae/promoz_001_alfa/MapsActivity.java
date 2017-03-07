@@ -60,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Log.d("TAG","Abri o errado");
         checkLogged();
 
         promozLocation = new PromozLocation(this);
@@ -173,6 +172,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addCoin(Integer amountCoin) {
         WalletDAO wallet = new WalletDAO(this);
         Integer walletId = wallet.walletIdByUserId(userID);
+
+        Log.e("TAG","walletId - " + walletId);
+
         String date = new SimpleDateFormat(DateUtil.YYYYMMDD_HHmmss).format(new Date());
         HistoricCoin historicCoin = new HistoricCoin(walletId,1,date,amountCoin,0);
         HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);

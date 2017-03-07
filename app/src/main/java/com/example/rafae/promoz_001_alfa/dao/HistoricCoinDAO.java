@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.dao.db.AppDatabase;
@@ -11,9 +13,6 @@ import com.example.rafae.promoz_001_alfa.dao.db.PromozContract;
 import com.example.rafae.promoz_001_alfa.model.HistoricCoin;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by vallux on 05/03/17.
@@ -77,23 +76,24 @@ public class HistoricCoinDAO extends PromozContract.HistoricCoin {
 
         String selection =  COLUMN_WALLET_ID + "=? and " + COLUMN_HST_DT_OPER + " > date('now','"+daysBefore.toString()+" day') and " + COLUMN_HST_TP_ID +" = "+HistoricTypeCoinDAO.TABLE_NAME + "." + HistoricTypeCoinDAO._ID;
         String[] selectionArgs = { String.valueOf(walletId)};
+
         String orderBy = COLUMN_HST_DT_OPER + " DESC";
 
         String fields[] = new String[]{TABLE_NAME + "." + allFields[0],allFields[1],allFields[2],allFields[3],allFields[4],allFields[5], HistoricTypeCoinDAO.TABLE_NAME + "." + HistoricTypeCoinDAO.COLUMN_HST_TP_DESC};
 
         try {
             cursor = database.query(TABLE_NAME + ", " + HistoricTypeCoinDAO.TABLE_NAME, fields, selection, selectionArgs, null, null, orderBy);
+
             if(cursor.moveToFirst())
                 do {
                     lst.add(populate());
-                }while (cursor.moveToNext());
+                } while (cursor.moveToNext());
 
         } catch (Exception ex){
             MessageDialogs.msgErrorDB(context, context.getString(R.string.tag_error_db), context.getString(R.string.error_funny_db), ex);
         } finally {
             cursor.close();
         }
-
         return lst;
     }
 
@@ -109,8 +109,8 @@ public class HistoricCoinDAO extends PromozContract.HistoricCoin {
     }
 
     //TODO never used
-    /*public List<HistoricCoin> list(){
-        Cursor cursor = database.query(TABLE_NAME, allFields, null, null, null, null, null);
+    public List<HistoricCoin> list(){
+        cursor = database.query(TABLE_NAME, allFields, null, null, null, null, null);
 
         List<HistoricCoin> lst = new ArrayList<HistoricCoin>();
         if(cursor.moveToFirst())
@@ -120,14 +120,9 @@ public class HistoricCoinDAO extends PromozContract.HistoricCoin {
 
         cursor.close();
         return lst;
-    }*/
+    }
 
     public void closeDataBase(){
         if(database.isOpen()) database.close();
     }
-
-    //TODO never used
-    /*public boolean remove(int id){
-        return database.delete(TABLE_NAME, "_id = ?", new String[]{ Integer.toString(id) }) > 0;
-    }*/
 }

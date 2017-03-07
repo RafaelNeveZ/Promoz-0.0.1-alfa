@@ -195,7 +195,8 @@ public final class PromozContract {
 
     //STRINGS CONSTANTS ############################################################################
     public static final String valuesToPopulate[] = {
-            PopulateBasicTables.VALUE_TABLE_USER
+            PopulateBasicTables.VALUE_TABLE_USER, PopulateBasicTables.VALUE_TABLE_HISTORIC_TYPE_COIN,
+            PopulateBasicTables.VALUE_TABLE_HISTORIC_TYPE_COIN2
     };
 
     public static final String tablesCreationList[] = {User.SQL_CREATE_USER,Wallet.SQL_CREATE_WALLET,

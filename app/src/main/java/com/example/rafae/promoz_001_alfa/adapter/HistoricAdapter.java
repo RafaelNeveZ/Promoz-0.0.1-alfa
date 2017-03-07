@@ -2,6 +2,7 @@ package com.example.rafae.promoz_001_alfa.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class HistoricAdapter extends CustomAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         HistoricCoin object = (HistoricCoin) list.get(i);
+        Log.e("TAG", "LIST = " + list.size());
 
         if(view == null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);

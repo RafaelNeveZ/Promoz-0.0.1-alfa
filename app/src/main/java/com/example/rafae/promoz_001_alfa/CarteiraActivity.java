@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.rafae.promoz_001_alfa.dao.CouponDAO;
 import com.example.rafae.promoz_001_alfa.model.Coupon;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 
@@ -45,7 +46,7 @@ public class CarteiraActivity extends AppCompatActivity implements CarteiraPageF
         return userId;
     }
 
-    public void showInfo(View view){
+    public void showInfo(View view) {
         CouponDAO cpnDAO = new CouponDAO(getApplicationContext());
         Coupon cpn = cpnDAO.couponById((Integer) view.getTag());
 
@@ -53,7 +54,7 @@ public class CarteiraActivity extends AppCompatActivity implements CarteiraPageF
             MessageDialogs.msgInfo(this,cpn.getTitle(),cpn.getInfo(),android.R.drawable.ic_dialog_info);
     }
 
-    public void useCupom(View view){
+    public void useCupom(View view) {
         // TODO: rotina para utilização do cupom
         CouponDAO cpnDAO = new CouponDAO(getApplicationContext());
         Coupon cpn = cpnDAO.couponById((Integer) view.getTag());

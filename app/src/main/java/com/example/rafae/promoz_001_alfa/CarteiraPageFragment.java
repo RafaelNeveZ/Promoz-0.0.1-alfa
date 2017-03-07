@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.rafae.promoz_001_alfa.adapter.CouponAdapter;
 import com.example.rafae.promoz_001_alfa.adapter.HistoricAdapter;
+import com.example.rafae.promoz_001_alfa.dao.CouponDAO;
 import com.example.rafae.promoz_001_alfa.dao.HistoricCoinDAO;
 import com.example.rafae.promoz_001_alfa.dao.WalletDAO;
 import com.example.rafae.promoz_001_alfa.dao.db.PromozContract;
@@ -73,11 +73,12 @@ public class CarteiraPageFragment extends Fragment {
         listcoupon.setAdapter(couponAdapter);
     }
 
-    private void setHistoricDate(Integer date){
+    private void setHistoricDate(Integer date) {
         historicCoinList = historicCoinDAO.listByDate(walletID,date);
-
         historicAdapter = new HistoricAdapter(getContext(),historicCoinList);
         listhistoric.setAdapter(historicAdapter);
+
+      //  Log.e("setHistoricDate","countByCoinId - " + historicCoinDAO.list().size());
     }
 
     @Override
@@ -96,7 +97,7 @@ public class CarteiraPageFragment extends Fragment {
 
         walletID = walletDAO.walletIdByUserId(callback.getUserId());
 
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 //super.handleMessage(msg);
