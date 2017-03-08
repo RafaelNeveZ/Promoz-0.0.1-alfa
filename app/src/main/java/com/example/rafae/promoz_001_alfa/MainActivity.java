@@ -12,6 +12,7 @@ import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,12 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rafae.promoz_001_alfa.dao.HistoricCoinDAO;
+import com.example.rafae.promoz_001_alfa.dao.TempAdvertisingDAO;
 import com.example.rafae.promoz_001_alfa.dao.UserDAO;
 import com.example.rafae.promoz_001_alfa.dao.WalletDAO;
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
 import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.example.rafae.promoz_001_alfa.model.HistoricCoin;
+import com.example.rafae.promoz_001_alfa.model.TempAdvertising;
 import com.example.rafae.promoz_001_alfa.model.User;
 import com.example.rafae.promoz_001_alfa.util.DateUtil;
 import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
@@ -43,6 +46,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -77,6 +81,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView foto;
     private final Context context =this;
     private LatLng latLngAtual;
+    private LatLng latLngAv7;
+    private Integer raioAv7;
+    private LatLng latLngShopSalv;
+    private Integer raioShopSalv;
+    private Circle circuloCoord = null;
+    private Polyline linhaRota;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .findFragmentById(R.id.map);
         bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.moeda_marker);
         mapFragment.getMapAsync(this);
+
+        latLngAv7 = new LatLng(-12.982541677928948, -38.51487658917903);
+        raioAv7 = 560;
+        latLngShopSalv = new LatLng(-12.978495718050622, -38.45488730818033);
+        raioShopSalv = 250;
 
         client = new AsyncHttpClient();
         responseHandler = new HttpResponseHandler(this);
@@ -268,12 +283,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
-        serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
+
+        makeFence(latLngAv7,raioAv7);
+        makeFence(latLngShopSalv,raioShopSalv);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         marker.hideInfoWindow();
+
+        if(linhaRota != null)
+            linhaRota.remove();
+
         if(marker.getTag() != null) {
             tempMarker = marker;
             Advertising add = (Advertising) tempMarker.getTag();
@@ -287,26 +308,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void finished() {
         List<Advertising> advertisings = responseHandler.getAdvertisings();
 
+        TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
+
         for (Advertising add : advertisings) {
             HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
             WalletDAO wallet = new WalletDAO(this);
             Integer walletId = wallet.walletIdByUserId(userID);
-            if (!historicCoinDAO.isCoinIdAdded(add.getId(),walletId)) {
-                addedMarkers.add(add.getId());
-                LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
-                mMap.addMarker((new MarkerOptions().position(coordLoja).title(add.getTitle()).icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(add.getId().toString()))).setTag(add);
-                add.setImage();
+
+            if (!historicCoinDAO.isCoinIdAdded(add.getId(),walletId)) { // verificando existencia de moeda já coletada
+                Integer iaddId = add.getId();
+
+                TempAdvertising check = tempAdvertisingDAO.addvertisingById(iaddId);
+                if(!tempAdvertisingDAO.isAdvertisingIdAdded(iaddId)){
+                    TempAdvertising tempAdvertising = new TempAdvertising(iaddId, add.getImageURL(), add.getQtdCoin(), add.getLat(), add.getLng());
+                    tempAdvertisingDAO.save(tempAdvertising);
+                    Log.e("SAVE","SALVO NO BANCO " + iaddId);
+                }
+
+
+               // addedMarkers.add(add.getId());
+                //LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
+                //mMap.addMarker((new MarkerOptions().position(coordLoja).title(add.getTitle()).icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(add.getId().toString()))).setTag(add);
+                //add.setImage(); // adiquire imagem no webserver
             }
         }
+        tempAdvertisingDAO.closeDataBase();
         responseHandler.clearAdvertisings();
     }
 
     @Override
-    public void gainCoin(Integer qtd, Integer idCoin) {
+    public void gainCoin(Integer qtd, Integer idCoin) { // invocado ao final da temporização
         PlayAudio audio = new PlayAudio();
         audio.play(this,R.raw.smw_coin, 1);
         addCoin(qtd, ((Advertising) tempMarker.getTag()).getId());
-        addedMarkers.remove(addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet())));
+
+        Integer idx = addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet()));
+        if (idx != -1)
+            addedMarkers.remove(idx);
+
         tempMarker.remove();
     }
 
@@ -322,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void resetMarker() {
+    public void resetMarker() { // metodo invocado somente no onDismiss do dialog
         tempMarker = null;
     }
 
@@ -348,6 +387,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onResume() {
+        serverURL = "http://" + Singleton.getServerIp(getResources().getString(R.string.server_ip), getResources().getString(R.string.pref_default_ip_address), this) + "/advertising/";
+        super.onResume();
+    }
+
+    @Override
     protected void onRestart() {
         checkLogged();
         super.onRestart();
@@ -369,20 +414,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         linha.add(latLngAtual);
         linha.add(coordLoja);
         linha.color(Color.argb(85, 200, 100,100));
-        Polyline polyline = mMap.addPolyline(linha);
-        polyline.setGeodesic(true);
+        if(linhaRota != null)
+            linhaRota.remove();
+        linhaRota = mMap.addPolyline(linha);
+        linhaRota.setGeodesic(true);
+    }
+
+    private void makeFence(LatLng latLng, Integer raio){
+        CircleOptions circleOptions = new CircleOptions().center(latLng);
+        circleOptions.fillColor(Color.argb(60,200,150,150)).strokeWidth(2);
+        circleOptions.radius(raio);
+        mMap.addCircle(circleOptions);
+    }
+
+    private boolean isInsideFence(LatLng de, LatLng para, Integer raio) {
+
+        double lat_de = de.latitude;
+        double long_de = de.longitude;
+
+        double lat_para = para.latitude;
+        double long_para = para.longitude;
+
+
+        double dist =
+        6371000*Math.acos(Math.cos(Math.PI*(90-lat_para)/180)*Math.cos((90-lat_de)*Math.PI/180)+Math.sin((90-lat_para)*Math.PI/180)*Math.sin((90-lat_de)*Math.PI/180)*Math.cos((long_para-long_de)*Math.PI/180));
+
+        return (dist <= raio);
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        mMap.clear();
+      //  mMap.clear();
         latLngAtual = latLng;
         addedMarkers.clear();
-        Integer raio = 100;
-        CircleOptions circulo = new CircleOptions().center(latLng);
-        circulo.fillColor(Color.argb(60,200,150,150)).strokeWidth(1);
-        circulo.radius(raio);
-        mMap.addCircle(circulo);
-        client.get(serverURL + "?lat="+latLng.latitude+"&long="+latLng.longitude+"&dist="+raio, responseHandler);
+        Integer raio = 90;
+
+        if(linhaRota != null)
+            linhaRota.remove();
+
+        if (circuloCoord != null)
+            circuloCoord.remove();
+        CircleOptions opt = new CircleOptions().center(latLng);
+        opt.fillColor(Color.argb(80,200,150,150)).strokeWidth(1);
+        opt.radius(raio);
+        circuloCoord = mMap.addCircle(opt);
+
+        if(isInsideFence(latLng,latLngShopSalv,raioShopSalv)){ // TODO: verifica se está dentro da região e se as moedas já foram baixadas
+            client.get(serverURL + "?lat="+latLngShopSalv.latitude+"&long="+latLngShopSalv.longitude+"&dist="+raioShopSalv, responseHandler);
+            //Log.e("SHOPPING","DENTRO");
+        }else if(isInsideFence(latLng,latLngAv7,raioAv7)){
+            client.get(serverURL + "?lat="+latLngAv7.latitude+"&long="+latLngAv7.longitude+"&dist="+raioAv7, responseHandler);
+            //Log.e("AV7","DENTRO");
+        }
     }
 }

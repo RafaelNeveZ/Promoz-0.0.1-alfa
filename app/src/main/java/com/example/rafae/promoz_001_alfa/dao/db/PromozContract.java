@@ -16,6 +16,7 @@ public final class PromozContract {
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String BLOB_TYPE = " BLOB";
+    private static final String REAL_TYPE = " REAL";
     private static final String PK_TYPE = " INTEGER NOT NULL PRIMARY KEY ASC AUTOINCREMENT";
     private static final String FK_TYPE = " FOREIGN KEY(";
     private static final String COMMA_SEP = ", ";
@@ -162,6 +163,31 @@ public final class PromozContract {
         };
     }
 
+    //TABLE TEMP_ADVERTISING #################################################################################
+    public static class TempAdvertising implements BaseColumns {
+        public static final String TABLE_NAME = "temp_advertising";
+        public static final String COLUMN_TMP_ADD_IMG_URL = "img_url";
+        public static final String COLUMN_TMP_ADD_QTD_COIN = "qtd_coin";
+        public static final String COLUMN_TMP_ADD_LAT = "lat";
+        public static final String COLUMN_TMP_ADD_LONG = "long";
+
+        public static final String SQL_CREATE_TMP_ADD = CREATE_STM + TempAdvertising.TABLE_NAME + " (" +
+                TempAdvertising._ID + INTEGER_TYPE + COMMA_SEP +
+                TempAdvertising.COLUMN_TMP_ADD_IMG_URL + TEXT_TYPE + COMMA_SEP +
+                TempAdvertising.COLUMN_TMP_ADD_QTD_COIN + INTEGER_TYPE + COMMA_SEP +
+                TempAdvertising.COLUMN_TMP_ADD_LAT + REAL_TYPE + COMMA_SEP +
+                TempAdvertising.COLUMN_TMP_ADD_LONG + REAL_TYPE +
+                END_STM;
+
+        public static final String allFields[] = {
+                TempAdvertising._ID,
+                TempAdvertising.COLUMN_TMP_ADD_IMG_URL,
+                TempAdvertising.COLUMN_TMP_ADD_QTD_COIN,
+                TempAdvertising.COLUMN_TMP_ADD_LAT,
+                TempAdvertising.COLUMN_TMP_ADD_LONG
+        };
+    }
+
     //POPULATE TABLES ##############################################################################
     public static class PopulateBasicTables {
 
@@ -201,6 +227,7 @@ public final class PromozContract {
 
     public static final String tablesCreationList[] = {User.SQL_CREATE_USER,Wallet.SQL_CREATE_WALLET,
             HistoricTypeCoin.SQL_CREATE_HISTORIC_TYPE_COIN, HistoricCoin.SQL_CREATE_HISTORIC_COIN,
-            Coupon.SQL_CREATE_COUPON, Triger.TRIGER_USER_WALLET, Triger.TRIGER_WALLET_BALANCE
+            Coupon.SQL_CREATE_COUPON, TempAdvertising.SQL_CREATE_TMP_ADD, Triger.TRIGER_USER_WALLET,
+            Triger.TRIGER_WALLET_BALANCE
     };
 }
