@@ -12,7 +12,6 @@ import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +40,7 @@ import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.PlayAudio;
 import com.example.rafae.promoz_001_alfa.util.PromozLocation;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
+import com.example.rafae.promoz_001_alfa.util.Util;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Integer raioShopSalv;
     private Circle circuloCoord = null;
     private Polyline linhaRota;
+    private String keyShop = "shopSalv";
+    private String keyAv7 = "av7";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,15 +316,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
             WalletDAO wallet = new WalletDAO(this);
             Integer walletId = wallet.walletIdByUserId(userID);
+            wallet.closeDataBase();
 
             if (!historicCoinDAO.isCoinIdAdded(add.getId(),walletId)) { // verificando existencia de moeda já coletada
                 Integer iaddId = add.getId();
 
-                TempAdvertising check = tempAdvertisingDAO.addvertisingById(iaddId);
                 if(!tempAdvertisingDAO.isAdvertisingIdAdded(iaddId)){
                     TempAdvertising tempAdvertising = new TempAdvertising(iaddId, add.getImageURL(), add.getQtdCoin(), add.getLat(), add.getLng());
                     tempAdvertisingDAO.save(tempAdvertising);
-                    Log.e("SAVE","SALVO NO BANCO " + iaddId);
+                 //   Log.e("SAVE","SALVO NO BANCO " + iaddId);
                 }
 
 
@@ -447,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       //  mMap.clear();
         latLngAtual = latLng;
         addedMarkers.clear();
-        Integer raio = 90;
+        Integer raio = 120;
 
         if(linhaRota != null)
             linhaRota.remove();
@@ -459,12 +461,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         opt.radius(raio);
         circuloCoord = mMap.addCircle(opt);
 
-        if(isInsideFence(latLng,latLngShopSalv,raioShopSalv)){ // TODO: verifica se está dentro da região e se as moedas já foram baixadas
+        if(isInsideFence(latLng,latLngShopSalv,raioShopSalv) && getDefaultSharedPreferences(getApplicationContext()).getInt(keyShop,0) == 0) { // verifica se está dentro da região e se as moedas já foram baixadas
             client.get(serverURL + "?lat="+latLngShopSalv.latitude+"&long="+latLngShopSalv.longitude+"&dist="+raioShopSalv, responseHandler);
-            //Log.e("SHOPPING","DENTRO");
-        }else if(isInsideFence(latLng,latLngAv7,raioAv7)){
+            Util.setSharedPreferencesRegion(this,keyShop,1);
+        } else if(isInsideFence(latLng,latLngAv7,raioAv7) && getDefaultSharedPreferences(getApplicationContext()).getInt(keyAv7,0) == 0) {
             client.get(serverURL + "?lat="+latLngAv7.latitude+"&long="+latLngAv7.longitude+"&dist="+raioAv7, responseHandler);
-            //Log.e("AV7","DENTRO");
+            Util.setSharedPreferencesRegion(this,keyAv7,1);
         }
     }
 }

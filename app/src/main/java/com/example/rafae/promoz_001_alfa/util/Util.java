@@ -64,7 +64,14 @@ public class Util extends AppCompatActivity {
         }
     }
 
-    public static void setSharedPreferences(Context context, Integer authUserId){
+    public static void setSharedPreferencesRegion(Context context, String key, Integer value){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
+    public static void setSharedPreferences(Context context, Integer authUserId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(User.getChave_ID(), authUserId);

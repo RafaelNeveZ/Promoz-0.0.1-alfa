@@ -61,7 +61,6 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
                 Log.e("SAVE", "ATUALIZOU");
             }else{*/
                 result = database.insert(TABLE_NAME, null, values);
-                Log.e("SAVE", "ADICIONOU");
             //}
         } catch (Exception ex){
             MessageDialogs.msgErrorDB(context, context.getString(R.string.tag_error_db), context.getString(R.string.error_funny_db), ex);
@@ -100,7 +99,7 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
         return qtd != 0;
     }
 
-    public TempAdvertising addvertisingById(Integer addId) {
+    /*public TempAdvertising addvertisingById(Integer addId) {
         TempAdvertising result = null;
 
         try {
@@ -116,7 +115,7 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
                 cursor.close();
         }
         return result;
-    }
+    }*/
 
     public void closeDataBase(){
         if(database.isOpen()) database.close();
