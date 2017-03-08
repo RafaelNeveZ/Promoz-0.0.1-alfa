@@ -84,7 +84,36 @@ public final class PromozContract {
                 HistoricTypeCoin.COLUMN_HST_TP_DESC
         };
     }
+    //TABLE VIRTUAL STORE ##########################################################################
+    public static class VirtualStore implements BaseColumns {
+        public static final String TABLE_NAME = "virtual_store";
+        public static final String COLUMN_VRT_STR_TITLE = "vrt_str_title";
+        public static final String COLUMN_VRT_STR_INFO = "vrt_str_info";
+        public static final String COLUMN_VRT_STR_IMG = "vrt_str_img";
+        public static final String COLUMN_VRT_STR_PRICE = "vrt_str_price";
+        public static final String COLUMN_VRT_STR_IND_VALID = "vrt_str_ind_valid";
+        public static final String COLUMN_VRT_STR_STR_ID = "vrt_str_str_id";
 
+        private static final String SQL_CREATE_VIRTUAL_STORE = CREATE_STM + VirtualStore.TABLE_NAME + " (" +
+                VirtualStore._ID + PK_TYPE + COMMA_SEP +
+                VirtualStore.COLUMN_VRT_STR_TITLE + TEXT_TYPE + COMMA_SEP +
+                VirtualStore.COLUMN_VRT_STR_INFO + TEXT_TYPE + COMMA_SEP +
+                VirtualStore.COLUMN_VRT_STR_IMG + BLOB_TYPE + COMMA_SEP +
+                VirtualStore.COLUMN_VRT_STR_PRICE + INTEGER_TYPE + COMMA_SEP +
+                VirtualStore.COLUMN_VRT_STR_STR_ID + INTEGER_TYPE + COMMA_SEP +
+                VirtualStore.COLUMN_VRT_STR_IND_VALID + INTEGER_TYPE +
+                END_STM;
+
+        public static final String allFields[] = {
+                VirtualStore._ID,
+                VirtualStore.COLUMN_VRT_STR_TITLE,
+                VirtualStore.COLUMN_VRT_STR_INFO,
+                VirtualStore.COLUMN_VRT_STR_IMG,
+                VirtualStore.COLUMN_VRT_STR_PRICE,
+                VirtualStore.COLUMN_VRT_STR_STR_ID,
+                VirtualStore.COLUMN_VRT_STR_IND_VALID
+        };
+    }
     //TABLE HISTORIC COIN ##########################################################################
     public static class HistoricCoin implements BaseColumns {
         public static final String TABLE_NAME = "historic_coin";
@@ -227,7 +256,7 @@ public final class PromozContract {
 
     public static final String tablesCreationList[] = {User.SQL_CREATE_USER,Wallet.SQL_CREATE_WALLET,
             HistoricTypeCoin.SQL_CREATE_HISTORIC_TYPE_COIN, HistoricCoin.SQL_CREATE_HISTORIC_COIN,
-            Coupon.SQL_CREATE_COUPON, TempAdvertising.SQL_CREATE_TMP_ADD, Triger.TRIGER_USER_WALLET,
-            Triger.TRIGER_WALLET_BALANCE
+            VirtualStore.SQL_CREATE_VIRTUAL_STORE, Coupon.SQL_CREATE_COUPON, TempAdvertising.SQL_CREATE_TMP_ADD,
+            Triger.TRIGER_USER_WALLET, Triger.TRIGER_WALLET_BALANCE
     };
 }

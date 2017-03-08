@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_loja"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.rafae.promoz_001_alfa.LojaActivity">
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_spinner"
+            android:spinnerMode="dropdown"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            >
+        </Spinner>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textColor="@drawable/text_buttom_color_loja_filtrar"
+            android:text="Filtrar"
+            android:background="@drawable/buttom_loja_filtrar"
+            />
+
+    </LinearLayout>-->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:id="@+id/lstShop" />
+
+</LinearLayout>

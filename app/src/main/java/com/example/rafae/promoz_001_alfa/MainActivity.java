@@ -226,9 +226,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toast.show();
 
         } else if (id == R.id.nav_shop) {
-           // Intent intent = new Intent(this,LojaActivity.class);
-           // intent.putExtra(User.getChave_ID(), userID);
-          //  this.startActivity(intent);
+            Intent intent = new Intent(this,LojaActivity.class);
+            intent.putExtra(User.getChave_ID(), userID);
+            this.startActivity(intent);
 
         } else if (id == R.id.nav_config) {
             Intent intent = new Intent(context,SettingsActivity.class);

@@ -80,6 +80,12 @@
 
 
         </activity>
+
+        <activity
+            android:name=".LojaActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_shop"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
