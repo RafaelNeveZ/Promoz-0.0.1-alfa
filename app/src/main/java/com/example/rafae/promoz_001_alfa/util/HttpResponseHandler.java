@@ -68,6 +68,7 @@ public class HttpResponseHandler extends AsyncHttpResponseHandler {
                 advertising.setLat(obj.getDouble("lat"));
                 advertising.setLng(obj.getDouble("long"));
                 advertising.setAlt(obj.getDouble("alt"));
+                advertising.setIdArea(obj.getInt("idShoppings"));
                 this.advertisings.add(advertising);
             }
             callback.finished();

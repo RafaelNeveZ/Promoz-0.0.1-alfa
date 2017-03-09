@@ -196,24 +196,30 @@ public final class PromozContract {
     public static class TempAdvertising implements BaseColumns {
         public static final String TABLE_NAME = "temp_advertising";
         public static final String COLUMN_TMP_ADD_IMG_URL = "img_url";
+        public static final String COLUMN_TMP_ADD_IMG = "img";
         public static final String COLUMN_TMP_ADD_QTD_COIN = "qtd_coin";
         public static final String COLUMN_TMP_ADD_LAT = "lat";
         public static final String COLUMN_TMP_ADD_LONG = "long";
+        public static final String COLUMN_TMP_ADD_REGION_ID = "reg_id";
 
         public static final String SQL_CREATE_TMP_ADD = CREATE_STM + TempAdvertising.TABLE_NAME + " (" +
                 TempAdvertising._ID + INTEGER_TYPE + COMMA_SEP +
                 TempAdvertising.COLUMN_TMP_ADD_IMG_URL + TEXT_TYPE + COMMA_SEP +
+                TempAdvertising.COLUMN_TMP_ADD_IMG + BLOB_TYPE + COMMA_SEP +
                 TempAdvertising.COLUMN_TMP_ADD_QTD_COIN + INTEGER_TYPE + COMMA_SEP +
                 TempAdvertising.COLUMN_TMP_ADD_LAT + REAL_TYPE + COMMA_SEP +
-                TempAdvertising.COLUMN_TMP_ADD_LONG + REAL_TYPE +
+                TempAdvertising.COLUMN_TMP_ADD_LONG + REAL_TYPE + COMMA_SEP +
+                TempAdvertising.COLUMN_TMP_ADD_REGION_ID + INTEGER_TYPE +
                 END_STM;
 
         public static final String allFields[] = {
                 TempAdvertising._ID,
                 TempAdvertising.COLUMN_TMP_ADD_IMG_URL,
+                TempAdvertising.COLUMN_TMP_ADD_IMG,
                 TempAdvertising.COLUMN_TMP_ADD_QTD_COIN,
                 TempAdvertising.COLUMN_TMP_ADD_LAT,
-                TempAdvertising.COLUMN_TMP_ADD_LONG
+                TempAdvertising.COLUMN_TMP_ADD_LONG,
+                TempAdvertising.COLUMN_TMP_ADD_REGION_ID
         };
     }
 

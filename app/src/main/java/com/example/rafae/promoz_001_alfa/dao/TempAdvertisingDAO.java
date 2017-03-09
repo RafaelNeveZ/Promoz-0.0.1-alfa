@@ -4,7 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.dao.db.AppDatabase;
@@ -12,9 +13,6 @@ import com.example.rafae.promoz_001_alfa.dao.db.PromozContract;
 import com.example.rafae.promoz_001_alfa.model.TempAdvertising;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by vallux on 08/03/17.
@@ -35,11 +33,13 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
 
     private TempAdvertising populate(Cursor cursor) { // Popula o objeto "TempAdvertising" com os dados do cursor
         TempAdvertising model = new TempAdvertising(
+                this.context,
                 cursor.getInt(cursor.getColumnIndex(_ID)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_TMP_ADD_IMG_URL)),
                 cursor.getInt(cursor.getColumnIndex(COLUMN_TMP_ADD_QTD_COIN)),
                 cursor.getDouble(cursor.getColumnIndex(COLUMN_TMP_ADD_LAT)),
-                cursor.getDouble(cursor.getColumnIndex(COLUMN_TMP_ADD_LONG))
+                cursor.getDouble(cursor.getColumnIndex(COLUMN_TMP_ADD_LONG)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_TMP_ADD_REGION_ID))
         );
         return model;
     }
@@ -54,6 +54,8 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
         values.put(COLUMN_TMP_ADD_QTD_COIN, tempAdvertising.getQtdCoin());
         values.put(COLUMN_TMP_ADD_LAT, tempAdvertising.getLat());
         values.put(COLUMN_TMP_ADD_LONG, tempAdvertising.getLng());
+        values.put(COLUMN_TMP_ADD_REGION_ID, tempAdvertising.getRegId());
+
 
         try {
             /*if(tempAdvertising.get_id() != null) {
@@ -63,6 +65,19 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
                 result = database.insert(TABLE_NAME, null, values);
             //}
         } catch (Exception ex){
+            MessageDialogs.msgErrorDB(context, context.getString(R.string.tag_error_db), context.getString(R.string.error_funny_db), ex);
+        }
+        return result;
+    }
+
+    public long saveImageById(byte[] img, Integer id) {
+
+        long result = Util.Constants.ERROR_BD;
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TMP_ADD_IMG, img);
+        try {
+            result = database.update(TABLE_NAME, values, _ID + " = ?", new String[]{id.toString()});
+        } catch (Exception ex) {
             MessageDialogs.msgErrorDB(context, context.getString(R.string.tag_error_db), context.getString(R.string.error_funny_db), ex);
         }
         return result;
@@ -93,10 +108,29 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
         String[] selectionArgs = { String.valueOf(advertisingId)};
         Cursor cursor = database.query(TABLE_NAME, new String[]{_ID}, selection, selectionArgs, null, null, null);
         Integer qtd = cursor.getCount();
-        Log.e("BYID","COUNT = " + qtd);
         cursor.close();
 
         return qtd != 0;
+    }
+
+    public List<TempAdvertising> listByRegionId(Integer regionId) {
+        List<TempAdvertising> lst = new ArrayList<TempAdvertising> ();
+
+        try {
+            cursor = database.query(TABLE_NAME, allFields, COLUMN_TMP_ADD_REGION_ID + " = ? ", new String[]{regionId.toString()}, null, null, null);
+
+            if (cursor.moveToFirst())
+                do {
+                    lst.add(populate(cursor));
+                }while (cursor.moveToNext());
+
+        } catch (Exception ex){
+            MessageDialogs.msgErrorDB(context, context.getString(R.string.tag_error_db), context.getString(R.string.error_save_or_update), ex);
+        } finally {
+            if(cursor != null)
+                cursor.close();
+        }
+        return lst;
     }
 
     /*public TempAdvertising addvertisingById(Integer addId) {

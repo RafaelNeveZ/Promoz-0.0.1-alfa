@@ -12,6 +12,7 @@ import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Polyline linhaRota;
     private String keyShop = "shopSalv";
     private String keyAv7 = "av7";
+    private String key[] = {keyShop, keyAv7};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,10 +280,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng tamari = new LatLng(-12.964996, -38.431504);
+        /*LatLng tamari = new LatLng(-12.964996, -38.431504);
         LatLng ruy = new LatLng(-12.960244, -38.431348);
         LatLngBounds Imbui = new LatLngBounds(tamari, ruy);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 12));
+       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 12));*/
 
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
@@ -299,9 +301,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(marker.getTag() != null) {
             tempMarker = marker;
-            Advertising add = (Advertising) tempMarker.getTag();
+//            Advertising add = (Advertising) tempMarker.getTag();
+            TempAdvertising add = (TempAdvertising) marker.getTag();
+
+            Log.e("TAG","ID = " + add.get_id());
+
             LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
-            MessageDialogs.msgAddvertising(this,R.layout.dialog, add.getImage(), R.id.imageView, 5000, add.getQtdCoin(), add.getId(), coordLoja);
+            MessageDialogs.msgAddvertising(this,R.layout.dialog, add.getImage(), R.id.imageView, 5000, add.getQtdCoin(), add.get_id(), coordLoja);
         }
         return true;
     }
@@ -309,8 +315,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void finished() {
         List<Advertising> advertisings = responseHandler.getAdvertisings();
-
         TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
+
+        Integer idReg = -1;
 
         for (Advertising add : advertisings) {
             HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
@@ -322,18 +329,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Integer iaddId = add.getId();
 
                 if(!tempAdvertisingDAO.isAdvertisingIdAdded(iaddId)){
-                    TempAdvertising tempAdvertising = new TempAdvertising(iaddId, add.getImageURL(), add.getQtdCoin(), add.getLat(), add.getLng());
+                    if(idReg == -1) idReg = add.getIdArea();
+
+                    TempAdvertising tempAdvertising = new TempAdvertising(this, iaddId, add.getImageURL(), add.getQtdCoin(), add.getLat(), add.getLng(), add.getIdArea());
                     tempAdvertisingDAO.save(tempAdvertising);
-                 //   Log.e("SAVE","SALVO NO BANCO " + iaddId);
+                    tempAdvertising.setImage();
                 }
-
-
                // addedMarkers.add(add.getId());
                 //LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
                 //mMap.addMarker((new MarkerOptions().position(coordLoja).title(add.getTitle()).icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(add.getId().toString()))).setTag(add);
                 //add.setImage(); // adiquire imagem no webserver
             }
         }
+        Util.setSharedPreferencesRegion(this, key[idReg-1], 1);
         tempAdvertisingDAO.closeDataBase();
         responseHandler.clearAdvertisings();
     }
@@ -444,6 +452,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return (dist <= raio);
     }
 
+    private void addMarker(LatLng latLng, Integer idArea, Integer raio){ // TODO: PAREI AQUI - adicionar marcadores
+        TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
+        List<TempAdvertising> lst = tempAdvertisingDAO.listByRegionId(idArea); // 2 = ID AVENIDA 7, 1 = ID SHOPPING SALVADOR
+
+        for (TempAdvertising tempAdvertising : lst) {
+            LatLng advertisingLatLng = new LatLng(tempAdvertising.getLat(), tempAdvertising.getLng());
+            if(isInsideFence(latLng, advertisingLatLng, raio )){
+                mMap.addMarker((new MarkerOptions().position(advertisingLatLng).title("").icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(tempAdvertising.get_id().toString()))).setTag(tempAdvertising);
+            }
+            //Log.e("TAG ", tempAdvertising.getRegId() + ", " + tempAdvertising.get_id());
+        }
+    }
+
     @Override
     public void onMapClick(LatLng latLng) {
       //  mMap.clear();
@@ -461,12 +482,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         opt.radius(raio);
         circuloCoord = mMap.addCircle(opt);
 
-        if(isInsideFence(latLng,latLngShopSalv,raioShopSalv) && getDefaultSharedPreferences(getApplicationContext()).getInt(keyShop,0) == 0) { // verifica se está dentro da região e se as moedas já foram baixadas
-            client.get(serverURL + "?lat="+latLngShopSalv.latitude+"&long="+latLngShopSalv.longitude+"&dist="+raioShopSalv, responseHandler);
-            Util.setSharedPreferencesRegion(this,keyShop,1);
-        } else if(isInsideFence(latLng,latLngAv7,raioAv7) && getDefaultSharedPreferences(getApplicationContext()).getInt(keyAv7,0) == 0) {
-            client.get(serverURL + "?lat="+latLngAv7.latitude+"&long="+latLngAv7.longitude+"&dist="+raioAv7, responseHandler);
-            Util.setSharedPreferencesRegion(this,keyAv7,1);
+        if(isInsideFence(latLng,latLngShopSalv,raioShopSalv)) { // verifica se está dentro da região e se as moedas já foram baixadas
+            if (getDefaultSharedPreferences(getApplicationContext()).getInt(keyShop,0) == 0){
+                client.get(serverURL + "?lat=" + latLngShopSalv.latitude + "&long=" + latLngShopSalv.longitude + "&dist=" + raioShopSalv, responseHandler);
+            } else {
+               // TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
+               // List<TempAdvertising> lst = tempAdvertisingDAO.listByRegionId(1); //
+
+                addMarker(latLng,1,raio);
+                /*for (TempAdvertising tempAdvertising : lst) {
+                    Log.e("TAG ", tempAdvertising.getRegId() + ", " + tempAdvertising.get_id());
+                }*/
+            }
+        } else if(isInsideFence(latLng,latLngAv7,raioAv7)) {
+            if(getDefaultSharedPreferences(getApplicationContext()).getInt(keyAv7,0) == 0){
+                client.get(serverURL + "?lat=" + latLngAv7.latitude + "&long=" + latLngAv7.longitude + "&dist=" + raioAv7, responseHandler);
+            } else {
+               // TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
+               // List<TempAdvertising> lst = tempAdvertisingDAO.listByRegionId(2); // 2 = ID AVENIDA 7
+                addMarker(latLng,2,raio);
+                /*for (TempAdvertising tempAdvertising : lst) {
+                    Log.e("TAG ", tempAdvertising.getRegId() + ", " + tempAdvertising.get_id());
+                }*/
+            }
         }
     }
 }

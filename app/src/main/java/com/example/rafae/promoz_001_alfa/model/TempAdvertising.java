@@ -1,8 +1,10 @@
 package com.example.rafae.promoz_001_alfa.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.rafae.promoz_001_alfa.R;
+import com.example.rafae.promoz_001_alfa.dao.TempAdvertisingDAO;
 import com.example.rafae.promoz_001_alfa.util.ImgHttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
 import com.loopj.android.http.AsyncHttpClient;
@@ -20,22 +22,28 @@ public class TempAdvertising implements Serializable, ImgHttpResponseHandler.onF
     private Integer qtdCoin;
     private double lat;
     private double lng;
+    private Integer regId;
     private ImgHttpResponseHandler responseHandler;
     private AsyncHttpClient client;
     private Context context;
 
 
-    public TempAdvertising (Integer id, String imageURL, Integer qtdCoin, double lat, double lng) {
+    public TempAdvertising (Context context, Integer id, String imageURL, Integer qtdCoin, double lat, double lng, Integer reg_id) {
         this._id = id;
         this.imageURL = imageURL;
         this.qtdCoin = qtdCoin;
         this.lat = lat;
         this.lng = lng;
+        this.regId = reg_id;
+        this.context = context;
     }
 
     @Override
-    public void finishedImg(byte[] img) {
+    public void finishedImg(byte[] img, Integer id) { // TODO: remover parâmetro id
         this.image = img;
+        TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(context);
+        tempAdvertisingDAO.saveImageById(img, this._id);
+        tempAdvertisingDAO.closeDataBase();
     }
 
     public  void setImage() {
@@ -46,6 +54,14 @@ public class TempAdvertising implements Serializable, ImgHttpResponseHandler.onF
         String URL = this.context.getResources().getString(R.string.protocol) + Singleton.getServerIp(this.context.getResources().getString(R.string.server_ip), this.context.getResources().getString(R.string.pref_default_ip_address), this.context) + this.context.getResources().getString(R.string.image_directory)  + getImageURL();
 
         client.get(URL,this.responseHandler);
+    }
+
+    public Integer getRegId() {
+        return regId;
+    }
+
+    public void setRegId(Integer regId) {
+        this.regId = regId;
     }
 
     public byte[] getImage() {

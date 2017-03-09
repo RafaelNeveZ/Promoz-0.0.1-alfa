@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.interfaces.Coin;
 import com.example.rafae.promoz_001_alfa.interfaces.Markers;
+import com.example.rafae.promoz_001_alfa.model.TempAdvertising;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -87,6 +88,60 @@ public class MessageDialogs {
                 //TODO DESENHAR ROTA
                 Markers callback = (Markers) activity;
                 callback.makeRoute(coordLoja);
+                alert.dismiss();
+            }
+        });
+    }
+
+    public static void msgAddvertising2(final Activity activity, int layoutId, int imageId, Integer timeMs, final TempAdvertising add) {
+
+        final Dialog alert = new Dialog(activity);
+        alert.setContentView(layoutId);
+        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TimerView timerView = (TimerView) alert.findViewById(R.id.timer);
+
+
+
+       /* if(image != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(activity.getResources(), bitmap);
+            drawable.setCircular(true);
+            ImageView adImage = (ImageView) alert.findViewById(imageId);
+            adImage.setImageDrawable(drawable);
+        }*/
+
+        final Button bt = (Button)alert.findViewById(R.id.bot);
+        bt.setEnabled(false);
+        bt.setVisibility(View.INVISIBLE);
+        alert.show();
+
+        final CountDownTimer countDownTimer = new CountDownTimer(timeMs, timeMs) {
+            public void onTick(long millisUntilFinished) {}
+            public void onFinish() {
+                bt.setEnabled(true);
+                bt.setVisibility( View.VISIBLE);
+                Coin callback = (Coin) activity;
+                callback.gainCoin(add.getQtdCoin(), add.get_id());
+            }
+        };
+        timerView.start(timeMs/1000);
+        countDownTimer.start();
+
+        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                countDownTimer.cancel();
+                Markers callback = (Markers) activity;
+                callback.resetMarker();
+            }
+        });
+
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO DESENHAR ROTA
+                Markers callback = (Markers) activity;
+                callback.makeRoute(new LatLng(add.getLat(), add.getLng()));
                 alert.dismiss();
             }
         });

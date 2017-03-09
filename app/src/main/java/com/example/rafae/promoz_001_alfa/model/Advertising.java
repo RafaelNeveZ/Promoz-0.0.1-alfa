@@ -1,6 +1,8 @@
 package com.example.rafae.promoz_001_alfa.model;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.util.ImgHttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
@@ -22,6 +24,7 @@ public class Advertising implements ImgHttpResponseHandler.onFinishResponseImg {
     private Double lat;
     private Double lng;
     private Double alt;
+    private Integer idArea;
     private ImgHttpResponseHandler responseHandler;
     private AsyncHttpClient client;
     private Context context;
@@ -31,6 +34,9 @@ public class Advertising implements ImgHttpResponseHandler.onFinishResponseImg {
     }
 
     public  void setImage() {
+
+        Log.e("TAG", this.imageURL);
+
         this.responseHandler = new ImgHttpResponseHandler();
         client = new AsyncHttpClient();
         this.responseHandler.setCallback(this);
@@ -41,8 +47,16 @@ public class Advertising implements ImgHttpResponseHandler.onFinishResponseImg {
     }
 
     @Override
-    public void finishedImg(byte[] img) {
+    public void finishedImg(byte[] img, Integer id) {
         this.image = img;
+    }
+
+    public Integer getIdArea() {
+        return idArea;
+    }
+
+    public void setIdArea(Integer idArea) {
+        this.idArea = idArea;
     }
 
     public Double getAlt() {
@@ -70,7 +84,7 @@ public class Advertising implements ImgHttpResponseHandler.onFinishResponseImg {
     }
 
     public String getImageURL() {
-        return imageURL;
+        return this.imageURL;
     }
 
     public void setImageURL(String imageURL) {

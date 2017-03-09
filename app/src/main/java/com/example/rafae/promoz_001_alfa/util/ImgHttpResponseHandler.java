@@ -9,10 +9,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class ImgHttpResponseHandler extends AsyncHttpResponseHandler {
 
-    onFinishResponseImg callback;
+    private onFinishResponseImg callback;
+    private Integer addId;
 
     public interface onFinishResponseImg {
-        void finishedImg(byte[] img);
+        void finishedImg(byte[] img, Integer id);
     }
 
     public void setCallback(Object obj) {
@@ -27,7 +28,7 @@ public class ImgHttpResponseHandler extends AsyncHttpResponseHandler {
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         //Log.e("SUCCESS","VEIO IMG");
-        callback.finishedImg(responseBody);
+        callback.finishedImg(responseBody, this.addId);
     }
 
     @Override
