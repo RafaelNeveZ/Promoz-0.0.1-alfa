@@ -38,8 +38,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     private static final float GEOFENCE_RADIUS = 1.0f; // in meters
     private PendingIntent geoFencePendingIntent;
     private final int GEOFENCE_REQ_CODE = 0;
-//    private final LatLng latlong =new LatLng(-12.9649743,-38.4314574);
-private final LatLng latlong =new LatLng(-12.717127,-38.312073);
+    private final LatLng latlong =new LatLng(-12.937491,-38.388596);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,16 +88,10 @@ private final LatLng latlong =new LatLng(-12.717127,-38.312073);
         googleApiClient.disconnect();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "onConnected()");
-       // Toast.makeText(this, "Conectei", Toast.LENGTH_SHORT).show();
         if ( checkPermission() ) {
             startGeofence();
             timerSplash();

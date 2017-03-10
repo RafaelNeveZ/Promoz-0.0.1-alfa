@@ -280,11 +280,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        /*LatLng tamari = new LatLng(-12.964996, -38.431504);
-        LatLng ruy = new LatLng(-12.960244, -38.431348);
-        LatLngBounds Imbui = new LatLngBounds(tamari, ruy);
-       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Imbui.getCenter(), 12));*/
-
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
 
