@@ -41,6 +41,9 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
                 cursor.getDouble(cursor.getColumnIndex(COLUMN_TMP_ADD_LONG)),
                 cursor.getInt(cursor.getColumnIndex(COLUMN_TMP_ADD_REGION_ID))
         );
+
+        model.setImage(cursor.getBlob(cursor.getColumnIndex(COLUMN_TMP_ADD_IMG))); // TODO: modificar classe para aceitar parâmetro IMAGE
+
         return model;
     }
 
@@ -150,6 +153,10 @@ public class TempAdvertisingDAO extends PromozContract.TempAdvertising {
         }
         return result;
     }*/
+
+    public boolean remove(int id){
+        return database.delete(TABLE_NAME, _ID + " = ?", new String[]{ Integer.toString(id) }) > 0;
+    }
 
     public void closeDataBase(){
         if(database.isOpen()) database.close();

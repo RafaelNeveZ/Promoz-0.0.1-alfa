@@ -1,10 +1,7 @@
 package com.example.rafae.promoz_001_alfa.util;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.util.Log;
-
 import com.example.rafae.promoz_001_alfa.model.Advertising;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.json.JSONArray;
@@ -13,7 +10,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import cz.msebera.android.httpclient.Header;

@@ -40,6 +40,7 @@ import com.example.rafae.promoz_001_alfa.util.HttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.MessageDialogs;
 import com.example.rafae.promoz_001_alfa.util.PlayAudio;
 import com.example.rafae.promoz_001_alfa.util.PromozLocation;
+import com.example.rafae.promoz_001_alfa.util.RotaHttpResponseHandler;
 import com.example.rafae.promoz_001_alfa.util.Singleton;
 import com.example.rafae.promoz_001_alfa.util.Util;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,7 +67,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback, GoogleMap.OnMarkerClickListener, HttpResponseHandler.onFinishResponse, Coin, Markers,
-        PromozLocation.connected, GoogleMap.OnMapClickListener {
+        PromozLocation.connected, GoogleMap.OnMapClickListener, RotaHttpResponseHandler.onRotaFinishResponse {
 
     private Integer userID=-1;
     private String serverURL;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GoogleMap mMap;
     private Bitmap bmp;
     private HttpResponseHandler responseHandler;
+    private RotaHttpResponseHandler rotaHttpResponseHandler;
     private AsyncHttpClient client;
     private List<Integer> addedMarkers = new ArrayList<Integer>();
     private Marker tempMarker;
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         client = new AsyncHttpClient();
         responseHandler = new HttpResponseHandler(this);
+        rotaHttpResponseHandler = new RotaHttpResponseHandler();
         responseHandler.setCallback(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -296,11 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(marker.getTag() != null) {
             tempMarker = marker;
-//            Advertising add = (Advertising) tempMarker.getTag();
             TempAdvertising add = (TempAdvertising) marker.getTag();
-
-            Log.e("TAG","ID = " + add.get_id());
-
             LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
             MessageDialogs.msgAddvertising(this,R.layout.dialog, add.getImage(), R.id.imageView, 5000, add.getQtdCoin(), add.get_id(), coordLoja);
         }
@@ -330,10 +329,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tempAdvertisingDAO.save(tempAdvertising);
                     tempAdvertising.setImage();
                 }
-               // addedMarkers.add(add.getId());
-                //LatLng coordLoja = new LatLng(add.getLat(), add.getLng());
-                //mMap.addMarker((new MarkerOptions().position(coordLoja).title(add.getTitle()).icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(add.getId().toString()))).setTag(add);
-                //add.setImage(); // adiquire imagem no webserver
             }
         }
         Util.setSharedPreferencesRegion(this, key[idReg-1], 1);
@@ -345,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void gainCoin(Integer qtd, Integer idCoin) { // invocado ao final da temporização
         PlayAudio audio = new PlayAudio();
         audio.play(this,R.raw.smw_coin, 1);
-        addCoin(qtd, ((Advertising) tempMarker.getTag()).getId());
+        addCoin(qtd, ((TempAdvertising) tempMarker.getTag()).get_id());
 
         Integer idx = addedMarkers.indexOf(Integer.parseInt(tempMarker.getSnippet()));
         if (idx != -1)
@@ -361,6 +356,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         HistoricCoin historicCoin = new HistoricCoin(walletId,1,date,amountCoin,coinId);
         HistoricCoinDAO historicCoinDAO = new HistoricCoinDAO(this);
         historicCoinDAO.save(historicCoin);
+        TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
+        tempAdvertisingDAO.remove(coinId);
+        tempAdvertisingDAO.closeDataBase();
         wallet.closeDataBase();
         historicCoinDAO.closeDataBase();
     }
@@ -415,14 +413,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void makeRoute(LatLng coordLoja) {
-        PolylineOptions linha = new PolylineOptions();
-        linha.add(latLngAtual);
-        linha.add(coordLoja);
-        linha.color(Color.argb(85, 200, 100,100));
-        if(linhaRota != null)
+
+        //PolylineOptions linha = new PolylineOptions();
+
+        String rotaURL = "https://maps.googleapis.com/maps/api/directions/json?origin=" + latLngAtual.toString().replaceAll("[\\(lat/lng: \\)()]","") +
+                "&destination=" + coordLoja.toString().replaceAll("[\\(lat/lng: \\)()]","") + "&key=" + getResources().getString(R.string.google_maps_key);
+
+        rotaHttpResponseHandler.setCallback(this);
+
+        client.get(rotaURL, rotaHttpResponseHandler);
+        //Log.e("TAG",rotaURL);
+
+        //linha.add(latLngAtual);
+        //linha.add(coordLoja);
+
+        //linha.color(Color.argb(85, 200, 100,100));
+        /*if(linhaRota != null)
             linhaRota.remove();
         linhaRota = mMap.addPolyline(linha);
-        linhaRota.setGeodesic(true);
+        linhaRota.setGeodesic(true);*/
     }
 
     private void makeFence(LatLng latLng, Integer raio){
@@ -447,7 +456,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return (dist <= raio);
     }
 
-    private void addMarker(LatLng latLng, Integer idArea, Integer raio){ // TODO: PAREI AQUI - adicionar marcadores
+    private void addMarker(LatLng latLng, Integer idArea, Integer raio) {
         TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
         List<TempAdvertising> lst = tempAdvertisingDAO.listByRegionId(idArea); // 2 = ID AVENIDA 7, 1 = ID SHOPPING SALVADOR
 
@@ -456,7 +465,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(isInsideFence(latLng, advertisingLatLng, raio )){
                 mMap.addMarker((new MarkerOptions().position(advertisingLatLng).title("").icon(BitmapDescriptorFactory.fromBitmap(bmp)).snippet(tempAdvertising.get_id().toString()))).setTag(tempAdvertising);
             }
-            //Log.e("TAG ", tempAdvertising.getRegId() + ", " + tempAdvertising.get_id());
         }
     }
 
@@ -464,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onMapClick(LatLng latLng) {
       //  mMap.clear();
         latLngAtual = latLng;
+        //Log.e("TAG",latLngAtual.toString().replaceAll("[\\(lat/lng: \\)()]",""));
         addedMarkers.clear();
         Integer raio = 120;
 
@@ -481,25 +490,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (getDefaultSharedPreferences(getApplicationContext()).getInt(keyShop,0) == 0){
                 client.get(serverURL + "?lat=" + latLngShopSalv.latitude + "&long=" + latLngShopSalv.longitude + "&dist=" + raioShopSalv, responseHandler);
             } else {
-               // TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
-               // List<TempAdvertising> lst = tempAdvertisingDAO.listByRegionId(1); //
-
                 addMarker(latLng,1,raio);
-                /*for (TempAdvertising tempAdvertising : lst) {
-                    Log.e("TAG ", tempAdvertising.getRegId() + ", " + tempAdvertising.get_id());
-                }*/
             }
         } else if(isInsideFence(latLng,latLngAv7,raioAv7)) {
             if(getDefaultSharedPreferences(getApplicationContext()).getInt(keyAv7,0) == 0){
                 client.get(serverURL + "?lat=" + latLngAv7.latitude + "&long=" + latLngAv7.longitude + "&dist=" + raioAv7, responseHandler);
             } else {
-               // TempAdvertisingDAO tempAdvertisingDAO = new TempAdvertisingDAO(this);
-               // List<TempAdvertising> lst = tempAdvertisingDAO.listByRegionId(2); // 2 = ID AVENIDA 7
                 addMarker(latLng,2,raio);
-                /*for (TempAdvertising tempAdvertising : lst) {
-                    Log.e("TAG ", tempAdvertising.getRegId() + ", " + tempAdvertising.get_id());
-                }*/
             }
         }
+    }
+
+    @Override
+    public void rotaFinished(PolylineOptions polylines) {
+        if(linhaRota != null)
+            linhaRota.remove();
+        linhaRota = mMap.addPolyline(polylines);
+        linhaRota.setGeodesic(true);
     }
 }

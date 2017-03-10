@@ -1,8 +1,6 @@
 package com.example.rafae.promoz_001_alfa.model;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.example.rafae.promoz_001_alfa.R;
 import com.example.rafae.promoz_001_alfa.dao.TempAdvertisingDAO;
 import com.example.rafae.promoz_001_alfa.util.ImgHttpResponseHandler;
